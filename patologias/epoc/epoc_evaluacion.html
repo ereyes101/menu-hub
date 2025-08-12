@@ -1,461 +1,206 @@
-<!doctype html>
-<html lang="es" data-theme="light" data-palette="aqua">
+<!DOCTYPE html>
+<html lang="es">
 <head>
 <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Recolector EPOC · Diseñalo como Steve Jobs</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>EPOC — Evaluación y Estratificación</title>
 <style>
-/* =====================
-   Tema "diseñalo como steve jobs"
-   - Gadugi
-   - Minimalismo, foco clínico
-   - Una columna, aire, microinteracciones
-   ===================== */
-:root{
-  --bg: #f7f8fb; --card:#ffffff; --ink:#0e1116; --muted:#6b7280; --line:#e5e7eb;
-  --accent:#0ea5e9; --accent-ink:#063041; --ok:#10b981; --warn:#f59e0b; --bad:#ef4444;
-  --radius:20px; --shadow: 0 10px 28px rgba(10,20,30,.08); --gap:14px; --pad:16px;
-}
-[data-theme="dark"]{
-  --bg:#0b1220; --card:#0f172a; --ink:#e5e7eb; --muted:#94a3b8; --line:#1f2a44;
-  --accent:#38bdf8; --accent-ink:#001a26; --shadow: 0 12px 30px rgba(0,0,0,.35);
-}
-[data-palette="pastel"]{ --accent:#7c3aed; }
-[data-palette="rose"]{ --accent:#fb7185; }
-
-html,body{height:100%}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:"Gadugi","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;line-height:1.35}
-*,*:before,*:after{box-sizing:border-box}
-
-/* Header */
-header.app{position:sticky;top:0;z-index:10;backdrop-filter:saturate(180%) blur(10px);background:rgba(255,255,255,.75);border-bottom:1px solid var(--line)}
-[data-theme="dark"] header.app{background:rgba(15,23,42,.8)}
-.app-row{max-width:980px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;justify-content:space-between}
-.brand{display:flex;gap:12px;align-items:center}
-.logo{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,#38bdf8,var(--accent));box-shadow:0 6px 16px rgba(14,165,233,.35)}
-.title{font-weight:800;letter-spacing:.2px}
-.subtitle{font-size:12px;color:var(--muted)}
-.controls{display:flex;gap:8px;align-items:center}
-select.theme,select.palette{border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--ink);padding:6px 10px;font-size:12px}
-
-/* Layout */
-.wrap{max-width:780px;margin:28px auto 120px;padding:0 16px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:var(--pad);margin-bottom:var(--gap)}
-.card h2{margin:0 0 6px;font-size:18px}
-.hint{font-size:12px;color:var(--muted)}
-
-/* Inputs */
-label{display:block;font-size:13px;margin:8px 0 6px}
-.input,select,textarea{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:14px;background:#fff;color:var(--ink);outline:none;transition:.15s border-color,.15s box-shadow}
-[data-theme="dark"] .input,[data-theme="dark"] select,[data-theme="dark"] textarea{background:#0b1220;color:var(--ink)}
-.input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 4px color-mix(in oklab, var(--accent) 20%, transparent)}
-.row{display:grid;grid-template-columns:1fr;gap:10px}
-.row-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.row-3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-@media (max-width:700px){.row-2,.row-3{grid-template-columns:1fr}}
-.small{font-size:11px;color:var(--muted)}
-.counter{font-size:11px;color:var(--muted);text-align:right;margin-top:4px}
-
-/* Chips */
-.chips{display:flex;flex-wrap:wrap;gap:8px}
-.chip{border:1px solid var(--line);border-radius:999px;padding:8px 12px;cursor:pointer;user-select:none;font-size:13px;transition:.15s background,.15s transform}
-.chip:hover{transform:translateY(-1px)}
-.chip.is-on{background:var(--accent);color:#fff;border-color:transparent}
-
-/* CAT sliders */
-.cat-item{display:grid;grid-template-columns:150px 1fr 40px;gap:10px;align-items:center}
-input[type=range]{width:100%}
-.badge{display:inline-block;padding:6px 10px;border-radius:999px;background:var(--ink);color:#fff;font-size:12px}
-
-/* Actions */
-.fab{position:fixed;left:0;right:0;bottom:0;background:rgba(255,255,255,.9);border-top:1px solid var(--line);backdrop-filter:saturate(180%) blur(10px)}
-[data-theme="dark"] .fab{background:rgba(15,23,42,.8)}
-.fab-row{max-width:980px;margin:0 auto;padding:12px 16px;display:flex;gap:10px;align-items:center;justify-content:space-between}
-.btn{appearance:none;border:1px solid var(--accent);background:var(--accent);color:#fff;padding:10px 16px;border-radius:14px;cursor:pointer;font-weight:700}
-.btn.secondary{background:transparent;color:var(--accent-ink)}
-.btn:active{transform:translateY(1px)}
-
-/* Output */
-pre.out{white-space:pre-wrap;background:#0b1220;color:#e5e7eb;border-radius:16px;padding:14px;border:1px solid #0f172a;overflow:auto}
-.tag{display:inline-block;padding:4px 8px;border-radius:999px;border:1px solid var(--line);font-size:12px;color:var(--muted)}
-
-/* QOL */
-::-webkit-outer-spin-button,::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
-input[type=number]{-moz-appearance:textfield}
+  :root{
+    --bg:#0b1220; --panel:#111827; --card:#111827; --ink:#e5e7eb; --muted:#94a3b8; --line:#243244; --accent:#22d3ee;
+    --field:#0f1a2b; --ok:#10b981; --warn:#f59e0b; --bad:#ef4444;
+  }
+  *{box-sizing:border-box} html,body{height:100%} body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial}
+  .wrap{max-width:1100px;margin:0 auto;padding:18px}
+  header{position:sticky;top:0;z-index:5;background:linear-gradient(180deg,#0b1220,#0b1220ee 70%,transparent);backdrop-filter:blur(6px);border-bottom:1px solid var(--line);margin-bottom:14px}
+  h1{font-size:22px;margin:10px 0 8px} .sub{color:var(--muted);margin:0 0 8px}
+  .grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin:14px 0}
+  .card h2{font-size:16px;margin:0 0 8px}
+  label{display:block;color:var(--muted);font-size:13px;margin:8px 0 6px}
+  input,select,textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--field);color:var(--ink);outline:none}
+  textarea{min-height:110px;resize:vertical}
+  .row{display:flex;gap:10px;align-items:center}
+  .pill{display:inline-block;padding:6px 9px;border:1px solid var(--line);border-radius:999px;background:var(--field);margin:4px 6px 0 0;font-size:12px;color:var(--muted)}
+  .btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:#132035;color:var(--ink);padding:10px 12px;border-radius:10px;cursor:pointer}
+  .btn:hover{border-color:var(--accent)}
+  .btn.primary{background:#122b3f}
+  .kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:8px}
+  .kpi .box{border:1px solid var(--line);border-radius:12px;padding:10px;background:#122036;text-align:center}
+  .kpi .box b{display:block;font-size:22px;margin-top:4px}
+  .hint{color:var(--muted);font-size:12px}
+  .ok{color:var(--ok)} .warn{color:var(--warn)} .bad{color:var(--bad)}
 </style>
 </head>
 <body>
-<header class="app">
-  <div class="app-row">
-    <div class="brand"><div class="logo"></div>
-      <div>
-        <div class="title">Recolector EPOC · Minimal Pro</div>
-        <div class="subtitle">Estética Gadugi · aire · foco clínico · sin tratamiento</div>
-      </div>
-    </div>
-    <div class="controls">
-      <select class="theme" id="theme">
-        <option value="light">Claro</option>
-        <option value="dark">Oscuro</option>
-      </select>
-      <select class="palette" id="palette">
-        <option value="aqua">Aqua</option>
-        <option value="pastel">Pastel</option>
-        <option value="rose">Rosé</option>
-      </select>
-    </div>
-  </div>
-</header>
+  <header class="wrap">
+    <h1>EPOC — Evaluación y Estratificación</h1>
+    <p class="sub">Borrador clínico para consulta externa. Datos mínimos y salida resumida. (Sin guardar datos del paciente)</p>
+  </header>
 
-<div class="wrap">
-  <!-- Paciente -->
-  <section class="card">
-    <h2>Paciente</h2>
-    <div class="row-3">
-      <div>
-        <label>ID Paciente</label>
-        <input class="input" id="pid" autocomplete="off" placeholder="ABC‑123" maxlength="24">
-        <div class="counter" data-for="pid"></div>
+  <main class="wrap">
+    <!-- 1) Datos básicos -->
+    <section class="card">
+      <h2>1) Datos básicos</h2>
+      <div class="grid">
+        <div>
+          <label>Nombre (opcional)</label>
+          <input id="nombre" placeholder="Iniciales o código">
+        </div>
+        <div>
+          <label>Edad (años)</label>
+          <input id="edad" type="number" min="0" inputmode="numeric">
+        </div>
+        <div>
+          <label>Tabaquismo</label>
+          <select id="tabaquismo">
+            <option value="Nunca">Nunca</option>
+            <option value="Exfumador">Exfumador</option>
+            <option value="Actual">Actual</option>
+          </select>
+        </div>
+        <div>
+          <label>Exacerbaciones el último año</label>
+          <input id="exac" type="number" min="0" value="0">
+        </div>
       </div>
-      <div>
-        <label>Nombre</label>
-        <input class="input" id="nombre" autocomplete="off" placeholder="Nombre y apellido" maxlength="60">
-        <div class="counter" data-for="nombre"></div>
+      <div class="row">
+        <span class="pill">Añade espirometría cuando la tengas</span>
+        <span class="pill">mMRC/CAT para síntomas</span>
       </div>
-      <div>
-        <label>Edad</label>
-        <input class="input" id="edad" type="number" inputmode="numeric" min="0" placeholder="66">
-      </div>
-    </div>
-    <div class="row-3">
-      <div>
-        <label>Sexo</label>
-        <select class="input" id="sexo"><option value="M">M</option><option value="F">F</option></select>
-      </div>
-      <div>
-        <label>Peso (kg)</label>
-        <input class="input" id="peso" type="number" step="0.1" inputmode="decimal" placeholder="80.0">
-      </div>
-      <div>
-        <label>Talla (cm)</label>
-        <input class="input" id="talla" type="number" step="0.1" inputmode="decimal" placeholder="172.0">
-      </div>
-    </div>
-    <div class="row-3">
-      <div>
-        <label>IMC <span class="small">(auto)</span></label>
-        <input class="input" id="imc" readonly placeholder="—">
-      </div>
-      <div>
-        <label>Alergias medicamentosas</label>
-        <input class="input" id="alergMed" placeholder="Ej: penicilina" maxlength="80">
-        <div class="counter" data-for="alergMed"></div>
-      </div>
-      <div>
-        <label>Alergias ambientales</label>
-        <input class="input" id="alergAmb" placeholder="Ej: polvo, pólenes" maxlength="80">
-        <div class="counter" data-for="alergAmb"></div>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Antecedentes y exposiciones -->
-  <section class="card">
-    <h2>Antecedentes y exposiciones</h2>
-    <div class="row-3">
-      <div>
-        <label>Tabaquismo</label>
-        <select class="input" id="tabaquismo"><option>Actual</option><option>Exfumador</option><option>Nunca</option></select>
+    <!-- 2) Síntomas y espirometría -->
+    <section class="card">
+      <h2>2) Síntomas y espirometría</h2>
+      <div class="grid">
+        <div>
+          <label>mMRC (0–4)</label>
+          <input id="mmrc" type="number" min="0" max="4" value="0">
+        </div>
+        <div>
+          <label>CAT (0–40)</label>
+          <input id="cat" type="number" min="0" max="40" value="0">
+        </div>
+        <div>
+          <label>FEV1 % predicho</label>
+          <input id="fev1" type="number" min="0" max="150" placeholder="%" >
+        </div>
+        <div>
+          <label>FVC % predicho (opcional)</label>
+          <input id="fvc" type="number" min="0" max="150" placeholder="%">
+        </div>
       </div>
-      <div>
-        <label>Paquetes‑año</label>
-        <input class="input" id="paq" type="number" step="0.1" inputmode="decimal" placeholder="40">
-      </div>
-      <div>
-        <label>Exposición a biomasa</label>
-        <select class="input" id="biomasa"><option>No</option><option>Sí</option></select>
-      </div>
-    </div>
-    <div class="row-2">
-      <div>
-        <label>Exposición a polvos</label>
-        <select class="input" id="polvos"><option>No</option><option>Sí</option></select>
-      </div>
-      <div>
-        <label>Tipo de polvo</label>
-        <select class="input" id="tipoPolvo"><option>No aplica</option><option>Carbón</option><option>Sílice</option><option>Algodón</option><option>Otro</option></select>
-      </div>
-    </div>
-  </section>
 
-  <!-- Síntomas & mMRC -->
-  <section class="card">
-    <h2>Síntomas y disnea (mMRC)</h2>
-    <div class="chips" id="mmrcChips">
-      <div class="chip" data-v="0">0 · solo con ejercicio intenso</div>
-      <div class="chip" data-v="1">1 · apuro / pendiente</div>
-      <div class="chip" data-v="2">2 · más lento o se detiene</div>
-      <div class="chip" data-v="3">3 · se detiene a 100 m</div>
-      <div class="chip" data-v="4">4 · al vestirse / casa</div>
-    </div>
-    <input type="hidden" id="mmrc" value="0">
-    <div class="row-3" style="margin-top:10px">
-      <div>
-        <label>Tos crónica</label>
-        <select class="input" id="tos"><option>No</option><option>Sí</option></select>
+      <div class="kpi">
+        <div class="box"><span>Síntomas</span><b id="kpi-sintomas">Bajos</b><span class="hint">mMRC≥2 o CAT≥10 → Altos</span></div>
+        <div class="box"><span>Riesgo</span><b id="kpi-riesgo">Bajo</b><span class="hint">Exacerbaciones ≥2 o 1 con ingreso → Alto</span></div>
+        <div class="box"><span>GOLD (orientativo)</span><b id="kpi-gold">Pendiente</b><span class="hint">Basado en FEV1 %</span></div>
       </div>
-      <div>
-        <label>Expectoración</label>
-        <select class="input" id="expectoracion"><option>No</option><option>Sí</option></select>
-      </div>
-      <div>
-        <label>Tipo/color esputo</label>
-        <input class="input" id="tipoEsputo" placeholder="mucoso, purulento…" maxlength="40">
-        <div class="counter" data-for="tipoEsputo"></div>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- CAT -->
-  <section class="card" id="CAT">
-    <h2>CAT (8 ítems, 0–5)</h2>
-    <div class="cat-item"><div class="muted">Tos</div><input type="range" min="0" max="5" value="0"><output>0</output></div>
-    <div class="cat-item"><div class="muted">Esputo</div><input type="range" min="0" max="5" value="0"><output>0</output></div>
-    <div class="cat-item"><div class="muted">Opresión torácica</div><input type="range" min="0" max="5" value="0"><output>0</output></div>
-    <div class="cat-item"><div class="muted">Disnea en cuestas</div><input type="range" min="0" max="5" value="0"><output>0</output></div>
-    <div class="cat-item"><div class="muted">Limitación actividades</div><input type="range" min="0" max="5" value="0"><output>0</output></div>
-    <div class="cat-item"><div class="muted">Confianza al salir</div><input type="range" min="0" max="5" value="0"><output>0</output></div>
-    <div class="cat-item"><div class="muted">Sueño</div><input type="range" min="0" max="5" value="0"><output>0</output></div>
-    <div class="cat-item"><div class="muted">Energía</div><input type="range" min="0" max="5" value="0"><output>0</output></div>
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px">
-      <div class="muted">Total CAT</div>
-      <div><span id="catTotal" class="badge">0</span></div>
-    </div>
-  </section>
+    <!-- 3) Comorbilidades / hallazgos -->
+    <section class="card">
+      <h2>3) Comorbilidades y hallazgos</h2>
+      <div class="row" style="flex-wrap:wrap">
+        <span class="pill">HTA</span><span class="pill">DM2</span><span class="pill">Cardiopatía</span>
+        <span class="pill">FA</span><span class="pill">ERC</span><span class="pill">Ansiedad/Depresión</span>
+      </div>
+      <label style="margin-top:10px">Notas</label>
+      <textarea id="notas" placeholder="Otros hallazgos relevantes, saturación basal, Rx/TC, eosinófilos, etc."></textarea>
+    </section>
 
-  <!-- Historia y riesgo -->
-  <section class="card">
-    <h2>Historia y riesgo</h2>
-    <div class="row-3">
-      <div>
-        <label>Exacerbaciones 12 m</label>
-        <input class="input" id="exac" type="number" inputmode="numeric" min="0" placeholder="0">
+    <!-- 4) Plan y salida -->
+    <section class="card">
+      <h2>4) Plan y salida</h2>
+      <div class="grid">
+        <div>
+          <label>Tratamiento inhalado propuesto</label>
+          <input id="tx" placeholder="LABA/LAMA/ICS…">
+        </div>
+        <div>
+          <label>Vacunación</label>
+          <input id="vac" placeholder="Influenza, Neumococo…">
+        </div>
+        <div>
+          <label>Rehabilitación respiratoria</label>
+          <select id="rehab">
+            <option>Pendiente</option><option>Indicada</option><option>En curso</option><option>No aplica</option>
+          </select>
+        </div>
       </div>
-      <div>
-        <label>Hospitalizaciones 12 m</label>
-        <input class="input" id="hosp" type="number" inputmode="numeric" min="0" placeholder="0">
-      </div>
-      <div>
-        <label>SatO₂ reposo (%)</label>
-        <input class="input" id="sat" type="number" inputmode="numeric" min="50" max="100" placeholder="95">
-      </div>
-    </div>
-  </section>
 
-  <!-- Función pulmonar & Oxigenación -->
-  <section class="card">
-    <h2>Función pulmonar y oxigenación</h2>
-    <div class="row-3">
-      <div>
-        <label>FEV1 % post‑BD</label>
-        <input class="input" id="fev1pct" type="number" step="0.1" inputmode="decimal" placeholder="58.0">
+      <div class="row" style="margin-top:10px;gap:8px">
+        <button class="btn primary" id="btn-resumen">Generar resumen</button>
+        <button class="btn" id="btn-copiar">Copiar</button>
+        <span class="hint">El resumen no guarda datos; úsalo para tu nota clínica.</span>
       </div>
-      <div>
-        <label>FEV1/FVC post‑BD</label>
-        <input class="input" id="fev1fvc" type="number" step="0.01" inputmode="decimal" placeholder="0.58">
-      </div>
-      <div>
-        <label>Oxígeno domiciliario</label>
-        <select class="input" id="o2"><option>No</option><option>Sí</option></select>
-      </div>
-    </div>
-  </section>
 
-  <!-- Paraclínicos -->
-  <section class="card">
-    <h2>Paraclínicos</h2>
-    <div class="row-2">
-      <div>
-        <label>Rx tórax</label>
-        <select class="input" id="rx"><option>Pendiente</option><option>Normal</option><option>Anormal</option></select>
-      </div>
-      <div>
-        <label>TAC</label>
-        <select class="input" id="tac"><option>No aplica</option><option>Pendiente</option><option>Enfisema</option><option>Bronquiectasias</option><option>Otros</option></select>
-      </div>
-    </div>
-    <div class="row-3">
-      <div>
-        <label>Eosinófilos (cel/µL)</label>
-        <input class="input" id="eos" type="number" inputmode="numeric" min="0" placeholder="—">
-      </div>
-      <div>
-        <label>Vacuna Influenza</label>
-        <select class="input" id="vacInfluenza"><option>Al día</option><option>Pendiente</option></select>
-      </div>
-      <div>
-        <label>Vacuna Neumococo</label>
-        <select class="input" id="vacNeumo"><option>Al día</option><option>Pendiente</option></select>
-      </div>
-    </div>
-    <div class="row-2">
-      <div>
-        <label>Vacuna COVID</label>
-        <select class="input" id="vacCovid"><option>Al día</option><option>Pendiente</option></select>
-      </div>
-      <div>
-        <label>Observaciones clínicas</label>
-        <input class="input" id="obs" placeholder="Notas concisas" maxlength="240">
-        <div class="counter" data-for="obs"></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Comorbilidades & Hallazgos -->
-  <section class="card">
-    <h2>Comorbilidades y hallazgos relevantes</h2>
-    <div class="chips" id="comorbs">
-      <div class="chip" data-v="HTA">HTA</div>
-      <div class="chip" data-v="DM2">DM2</div>
-      <div class="chip" data-v="IC">Insuf. cardíaca</div>
-      <div class="chip" data-v="FA">Fibrilación auricular</div>
-      <div class="chip" data-v="ERGE">ERGE</div>
-      <div class="chip" data-v="Depresión">Depresión</div>
-      <div class="chip" data-v="ERC">ERC</div>
-      <div class="chip" data-v="Ansiedad">Ansiedad</div>
-    </div>
-    <div class="chips" id="hallazgos" style="margin-top:10px">
-      <div class="chip" data-v="Edema MMII">Edema MMII</div>
-      <div class="chip" data-v="Dolor precordial">Dolor precordial</div>
-      <div class="chip" data-v="Soplo cardíaco">Soplo cardíaco</div>
-      <div class="chip" data-v="Cianosis">Cianosis</div>
-      <div class="chip" data-v="Otros">Otros</div>
-    </div>
-  </section>
-
-  <!-- Adherencia y Estratificación -->
-  <section class="card">
-    <h2>Adherencia y estratificación (manual)</h2>
-    <div class="row-3">
-      <div>
-        <label>Adherencia tratamiento previo</label>
-        <select class="input" id="adherencia"><option>Alta</option><option>Media</option><option>Baja</option></select>
-      </div>
-      <div>
-        <label>Causa baja adherencia</label>
-        <input class="input" id="causaAdh" placeholder="Opcional" maxlength="80">
-        <div class="counter" data-for="causaAdh"></div>
-      </div>
-      <div>
-        <label>GOLD</label>
-        <select class="input" id="gold"><option>Pendiente</option><option>A</option><option>B</option><option>E</option></select>
-      </div>
-    </div>
-    <div class="row-2">
-      <div>
-        <label>GESEPOC</label>
-        <select class="input" id="gesepoc"><option>Pendiente</option><option>Bajo</option><option>Intermedio</option><option>Alto</option></select>
-      </div>
-    </div>
-  </section>
-
-  <!-- Salida -->
-  <section class="card">
-    <h2>Salida · Bloque delimitado</h2>
-    <div style="display:flex;justify-content:space-between;align-items:center">
-      <div class="muted">Pega este bloque en tu Analista EPOC (ChatGPT). <span class="tag">Solo resumen · sin tratamiento</span></div>
-      <div>
-        <button class="btn secondary" id="copiar">Copiar</button>
-      </div>
-    </div>
-    <pre class="out" id="salida">(Aún no generado)</pre>
-  </section>
-</div>
-
-<div class="fab">
-  <div class="fab-row">
-    <div class="muted">Minimalismo funcional · una acción por vez</div>
-    <div>
-      <button class="btn" id="generar">Generar resumen</button>
-    </div>
-  </div>
-</div>
+      <label style="margin-top:12px">Salida — Bloque delimitado</label>
+      <textarea id="salida" readonly></textarea>
+    </section>
+  </main>
 
 <script>
-const $ = (s, r=document)=>r.querySelector(s); const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
-const vNum = el => { const n=parseFloat(el?.value); return isNaN(n)? null : n; };
+  // Utilidades simples
+  const $ = sel => document.querySelector(sel);
+  const valN = id => Number((document.getElementById(id).value||"").replace(',','.')) || 0;
 
-// Tema y paleta
-$('#theme').addEventListener('change', e=> document.documentElement.setAttribute('data-theme', e.target.value));
-$('#palette').addEventListener('change', e=> document.documentElement.setAttribute('data-palette', e.target.value));
+  function clasSintomas(mmrc, cat){
+    const altos = (mmrc >= 2) || (cat >= 10);
+    return altos ? "Altos" : "Bajos";
+  }
+  function clasRiesgo(exac){ return (exac >= 2) ? "Alto" : "Bajo"; }
+  function clasGOLD(fev1){
+    if(!fev1) return "Pendiente";
+    if(fev1 >= 80) return "GOLD 1";
+    if(fev1 >= 50) return "GOLD 2";
+    if(fev1 >= 30) return "GOLD 3";
+    return "GOLD 4";
+  }
 
-// Contadores de caracteres
-function bindCounters(){
-  $$('input[maxlength], textarea[maxlength]').forEach(inp=>{
-    const max = parseInt(inp.getAttribute('maxlength'),10);
-    const c = document.querySelector(`.counter[data-for="${inp.id}"]`);
-    const upd=()=>{ if(c) c.textContent = `${inp.value.length}/${max}`; };
-    inp.addEventListener('input', upd); upd();
+  function actualizarKPIs(){
+    const mmrc = valN("mmrc"), cat = valN("cat"), exac = valN("exac"), fev1 = valN("fev1");
+    $("#kpi-sintomas").textContent = clasSintomas(mmrc, cat);
+    $("#kpi-riesgo").textContent = clasRiesgo(exac);
+    $("#kpi-gold").textContent = clasGOLD(fev1);
+  }
+  ["mmrc","cat","exac","fev1"].forEach(id => document.getElementById(id).addEventListener("input", actualizarKPIs));
+  actualizarKPIs();
+
+  function generarResumen(){
+    const nombre = $("#nombre").value || "Paciente";
+    const edad = $("#edad").value || "—";
+    const mmrc = $("#mmrc").value || "—";
+    const cat = $("#cat").value || "—";
+    const exac = $("#exac").value || 0;
+    const fev1 = $("#fev1").value || "—";
+    const taba = $("#tabaquismo").value;
+    const gold = $("#kpi-gold").textContent;
+    const sint = $("#kpi-sintomas").textContent;
+    const riesgo = $("#kpi-riesgo").textContent;
+    const tx = $("#tx").value || "A definir";
+    const vac = $("#vac").value || "Pendiente";
+    const rehab = $("#rehab").value;
+    const notas = $("#notas").value || "";
+
+    const bloque = [
+      "----- EPOC | Evaluación y Estratificación -----",
+      `Paciente: ${nombre} | Edad: ${edad} | Tabaquismo: ${taba}`,
+      `Síntomas: mMRC ${mmrc} / CAT ${cat} → ${sint}`,
+      `Exacerbaciones último año: ${exac} → Riesgo ${riesgo}`,
+      `Espirometría: FEV1 % ${fev1} → ${gold}`,
+      `Plan: ${tx} | Rehabilitación: ${rehab} | Vacunación: ${vac}`,
+      (notas ? `Notas: ${notas}` : ""),
+      "-----------------------------------------------"
+    ].filter(Boolean).join("\n");
+    $("#salida").value = bloque;
+  }
+  $("#btn-resumen").addEventListener("click", generarResumen);
+
+  $("#btn-copiar").addEventListener("click", async () => {
+    try{ await navigator.clipboard.writeText($("#salida").value); $("#btn-copiar").textContent = "¡Copiado!"; setTimeout(()=>$("#btn-copiar").textContent="Copiar",1400); }
+    catch{ alert("No se pudo copiar. Selecciona y copia manualmente."); }
   });
-}
-
-// IMC
-function calcIMC(){ const p=vNum($('#peso')); const t=vNum($('#talla')); return p&&t ? +(p/Math.pow(t/100,2)).toFixed(1) : null; }
-$$('#peso,#talla').forEach(el=> el.addEventListener('input', ()=> $('#imc').value = calcIMC() ?? ''));
-
-// Chips mMRC
-const mmrcHidden=$('#mmrc');
-$$('#mmrcChips .chip').forEach(ch=> ch.addEventListener('click', ()=>{ $$('#mmrcChips .chip').forEach(c=>c.classList.remove('is-on')); ch.classList.add('is-on'); mmrcHidden.value=ch.dataset.v; }));
-$$('#mmrcChips .chip')[0].classList.add('is-on');
-
-// CAT
-function bindRanges(){ $$('#CAT .cat-item input[type=range]').forEach(r=>{ const out=r.nextElementSibling; out.value=r.value; r.addEventListener('input', ()=>{ out.value=r.value; updateCAT(); }); }); }
-function updateCAT(){ let t=0; $$('#CAT .cat-item input[type=range]').forEach(r=> t+= parseInt(r.value||'0',10)); $('#catTotal').textContent=t; return t; }
-bindRanges(); updateCAT();
-
-// Chips multiselección (comorbilidades / hallazgos)
-function toggleMulti(containerSel){ $$(containerSel+' .chip').forEach(ch=> ch.addEventListener('click', ()=> ch.classList.toggle('is-on'))); }
-toggleMulti('#comorbs'); toggleMulti('#hallazgos');
-function selectedChips(containerSel){ return $$(containerSel+' .chip.is-on').map(c=>c.dataset.v).join(', ') || 'ninguno'; }
-
-// Generar bloque
-function generar(){
-  const resumen=[];
-  resumen.push(`Motivo: Evaluación integral de EPOC (primera vez)`);
-  resumen.push(`Identificación: ${$('#pid').value||'SIN-ID'} — ${$('#nombre').value||'Sin nombre'}`);
-  resumen.push(`Edad: ${$('#edad').value||'pendiente'} · Sexo: ${$('#sexo').value||'pendiente'} · IMC: ${calcIMC() ?? 'pendiente'}`);
-  resumen.push(`Tabaquismo: ${$('#tabaquismo').value||'pendiente'} · Paquetes-año: ${$('#paq').value||'pendiente'} · Biomasa: ${$('#biomasa').value||'pendiente'}`);
-  resumen.push(`Exposición a polvos: ${$('#polvos').value} · Tipo: ${$('#tipoPolvo').value}`);
-  resumen.push(`Alergias: medicamentosas=${$('#alergMed').value||'ninguna'}; ambientales=${$('#alergAmb').value||'ninguna'}`);
-  resumen.push(`Síntomas: mMRC ${$('#mmrc').value}; Tos ${$('#tos').value}; Expectoración ${$('#expectoracion').value}${ $('#expectoracion').value==='Sí' ? ' ('+($('#tipoEsputo').value||'no especificado')+')' : ''}`);
-  resumen.push(`CAT total: ${updateCAT()}`);
-  resumen.push(`Riesgo: Exacerbaciones 12m=${$('#exac').value||0}; Hospitalizaciones 12m=${$('#hosp').value||0}`);
-  resumen.push(`Función: FEV1 % posBD=${$('#fev1pct').value||'pendiente'}; FEV1/FVC posBD=${$('#fev1fvc').value||'pendiente'}`);
-  resumen.push(`Oxigenación: SatO₂ reposo=${$('#sat').value||'pendiente'}%; O₂ domiciliario=${$('#o2').value}`);
-  resumen.push(`Paraclínicos: Rx=${$('#rx').value}; TAC=${$('#tac').value}; Eosinófilos=${$('#eos').value||'pendiente'}`);
-  resumen.push(`Vacunas: Influenza ${$('#vacInfluenza').value}; Neumococo ${$('#vacNeumo').value}; COVID ${$('#vacCovid').value}`);
-  resumen.push(`Comorbilidades: ${selectedChips('#comorbs')}`);
-  resumen.push(`Hallazgos relevantes: ${selectedChips('#hallazgos')}`);
-  resumen.push(`Adherencia: ${$('#adherencia').value}; Causa: ${$('#causaAdh').value||'—'}`);
-  resumen.push(`Estratificación (manual): GOLD ${$('#gold').value}; GESEPOC ${$('#gesepoc').value}`);
-  if(($('#obs').value||'').trim().length){ resumen.push(`Observaciones: ${$('#obs').value.trim()}`); }
-
-  const meta = [
-    `patient_id=${$('#pid').value||'SIN-ID'}`,
-    `nombre=${$('#nombre').value||''}`,
-    `edad=${$('#edad').value||''}`,
-    `sexo=${$('#sexo').value||''}`
-  ].join('; ');
-
-  const block = `<<<RESUMEN_HISTORIA>>>\n${resumen.join('\n')}\n<<<FIN_RESUMEN>>>\n${meta}`;
-  $('#salida').textContent = block;
-}
-
-$('#generar').addEventListener('click', generar);
-$('#copiar').addEventListener('click', ()=> navigator.clipboard?.writeText($('#salida').textContent||'').catch(()=>{}));
-
-// init
-bindCounters();
 </script>
 </body>
 </html>
