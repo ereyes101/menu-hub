@@ -27,13 +27,23 @@
       ]
     },
     {
-      "name": "Patologías",
-      "tags": "patologias epoc asma sueno aasm",
-      "groups": [
-        { "label": "EPOC",  "items": [] },
-        { "label": "Asma",  "items": [] },
-        { "label": "Sueño", "items": [] }
+  "name": "Patologías",
+  "tags": "patologias epoc asma sueno aasm",
+  "groups": [
+    {
+      "label": "EPOC",
+      "items": [
+        {
+          "title": "Evaluación y Estratificación EPOC",
+          "href": "patologias/epoc/epoc_evaluacion.html",
+          "tags": "epoc gold gesepoc bodex"
+        }
       ]
-    }
+    },
+    { "label": "Asma", "items": [] },
+    { "label": "Sueño", "items": [] }
+  ]
+}
+
   ]
 }
