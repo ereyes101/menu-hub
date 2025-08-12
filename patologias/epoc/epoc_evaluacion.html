@@ -1,206 +1,282 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>EPOC — Evaluación y Estratificación</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>EPOC — GOLD/BODE/BODEx (funcional)</title>
 <style>
-  :root{
-    --bg:#0b1220; --panel:#111827; --card:#111827; --ink:#e5e7eb; --muted:#94a3b8; --line:#243244; --accent:#22d3ee;
-    --field:#0f1a2b; --ok:#10b981; --warn:#f59e0b; --bad:#ef4444;
-  }
-  *{box-sizing:border-box} html,body{height:100%} body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial}
-  .wrap{max-width:1100px;margin:0 auto;padding:18px}
-  header{position:sticky;top:0;z-index:5;background:linear-gradient(180deg,#0b1220,#0b1220ee 70%,transparent);backdrop-filter:blur(6px);border-bottom:1px solid var(--line);margin-bottom:14px}
-  h1{font-size:22px;margin:10px 0 8px} .sub{color:var(--muted);margin:0 0 8px}
-  .grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin:14px 0}
-  .card h2{font-size:16px;margin:0 0 8px}
-  label{display:block;color:var(--muted);font-size:13px;margin:8px 0 6px}
-  input,select,textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--field);color:var(--ink);outline:none}
-  textarea{min-height:110px;resize:vertical}
-  .row{display:flex;gap:10px;align-items:center}
-  .pill{display:inline-block;padding:6px 9px;border:1px solid var(--line);border-radius:999px;background:var(--field);margin:4px 6px 0 0;font-size:12px;color:var(--muted)}
-  .btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:#132035;color:var(--ink);padding:10px 12px;border-radius:10px;cursor:pointer}
-  .btn:hover{border-color:var(--accent)}
-  .btn.primary{background:#122b3f}
-  .kpi{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:8px}
-  .kpi .box{border:1px solid var(--line);border-radius:12px;padding:10px;background:#122036;text-align:center}
-  .kpi .box b{display:block;font-size:22px;margin-top:4px}
-  .hint{color:var(--muted);font-size:12px}
-  .ok{color:var(--ok)} .warn{color:var(--warn)} .bad{color:var(--bad)}
+  :root{--bg:#0b1220;--card:#111827;--txt:#e5e7eb;--mut:#a3a3a3;--ok:#10b981;--warn:#f59e0b;--bad:#ef4444}
+  *{box-sizing:border-box} body{margin:0;font-family:system-ui,Segoe UI,Roboto;background:var(--bg);color:var(--txt)}
+  header{padding:.9rem 1rem;background:#0f172a;border-bottom:1px solid #1f2937;text-align:center}
+  main{max-width:860px;margin:0 auto;padding:1rem}
+  section{background:var(--card);border:1px solid #1f2937;border-radius:14px;padding:1rem;margin:.8rem 0}
+  h2{margin:.2rem 0 1rem 0;font-size:1.05rem}
+  .row{display:grid;gap:.7rem}
+  @media(min-width:760px){.row{grid-template-columns:repeat(12,1fr)}}
+  .f{display:flex;flex-direction:column;gap:.35rem;grid-column:span 12}
+  .sm{grid-column:span 6}.md{grid-column:span 4}
+  label{font-size:.85rem;color:#cbd5e1}
+  input,select{background:#0b1220;border:1px solid #233046;color:var(--txt);padding:.55rem .65rem;border-radius:10px}
+  .kpi{display:grid;grid-template-columns:repeat(2,1fr);gap:.6rem}
+  .k{border:1px solid #233046;border-radius:10px;padding:.55rem}
+  .k .l{font-size:.75rem;color:#9ca3af}.k .v{font-weight:700}
+  .bar{position:sticky;bottom:10px;display:flex;gap:.5rem;justify-content:center}
+  button{border-radius:10px;border:1px solid #334155;background:#101827;color:#fff;padding:.55rem .9rem;cursor:pointer}
+  button.primary{background:linear-gradient(90deg,#0ea5b7,#7c3aed);border:none}
+  .note{font-size:.8rem;color:var(--mut)}
 </style>
 </head>
 <body>
-  <header class="wrap">
-    <h1>EPOC — Evaluación y Estratificación</h1>
-    <p class="sub">Borrador clínico para consulta externa. Datos mínimos y salida resumida. (Sin guardar datos del paciente)</p>
-  </header>
-
-  <main class="wrap">
-    <!-- 1) Datos básicos -->
-    <section class="card">
-      <h2>1) Datos básicos</h2>
-      <div class="grid">
-        <div>
-          <label>Nombre (opcional)</label>
-          <input id="nombre" placeholder="Iniciales o código">
-        </div>
-        <div>
-          <label>Edad (años)</label>
-          <input id="edad" type="number" min="0" inputmode="numeric">
-        </div>
-        <div>
-          <label>Tabaquismo</label>
-          <select id="tabaquismo">
-            <option value="Nunca">Nunca</option>
-            <option value="Exfumador">Exfumador</option>
-            <option value="Actual">Actual</option>
-          </select>
-        </div>
-        <div>
-          <label>Exacerbaciones el último año</label>
-          <input id="exac" type="number" min="0" value="0">
-        </div>
+<header><h1>EPOC — GOLD / BODE / BODEx</h1></header>
+<main>
+  <section>
+    <h2>1) Datos básicos</h2>
+    <div class="row">
+      <div class="f md"><label>Peso (kg)</label><input id="peso" type="number" inputmode="decimal"></div>
+      <div class="f md"><label>Altura (cm)</label><input id="altura" type="number" inputmode="decimal"></div>
+      <div class="f md"><label>IMC</label><input id="imc" readonly></div>
+      <div class="f md"><label>mMRC (0–4)</label>
+        <select id="mmrc"><option value="">—</option><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option></select>
       </div>
-      <div class="row">
-        <span class="pill">Añade espirometría cuando la tengas</span>
-        <span class="pill">mMRC/CAT para síntomas</span>
+      <div class="f md"><label>CAT (0–40)</label><input id="cat" type="number" min="0" max="40"></div>
+      <div class="f md"><label>FEV₁ % predicho</label><input id="fev1pct" type="number" min="0" max="200" step="0.1"></div>
+      <div class="f md"><label>6MWD (m)</label><input id="sixmwd" type="number" step="1"></div>
+      <div class="f md"><label>Exacerbaciones 12m</label><input id="exacs" type="number" min="0" step="1" value="0"></div>
+      <div class="f md"><label>Con hospitalización</label><input id="exacsHosp" type="number" min="0" step="1" value="0"></div>
+    </div>
+    <div class="note">Síntomas altos si CAT ≥ 10 o mMRC ≥ 2. Riesgo alto si ≥2 exacerbaciones o ≥1 con hospitalización.</div>
+  </section>
+
+  <section>
+    <h2>2) Clasificación automática</h2>
+    <div class="kpi">
+      <div class="k"><div class="l">Grupo GOLD</div><div id="goldGrupo" class="v">—</div></div>
+      <div class="k"><div class="l">Grado GOLD (FEV₁)</div><div id="goldGrado" class="v">—</div></div>
+      <div class="k"><div class="l">BODE (0–10)</div><div id="bode" class="v">—</div></div>
+      <div class="k"><div class="l">BODEx (0–9)</div><div id="bodex" class="v">—</div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>3) Oxígeno (bandera)</h2>
+    <div class="row">
+      <div class="f md"><label>SaO₂ reposo (%)</label><input id="sao2" type="number" step="0.1"></div>
+      <div class="f md"><label>PaO₂ (mmHg)</label><input id="pao2" type="number" step="0.1"></div>
+      <div class="f md"><label>Hematocrito (%)</label><input id="hto" type="number" step="0.1"></div>
+      <div class="f md"><label>Cor pulmonale</label>
+        <select id="corpulmonale"><option>No</option><option>En estudio</option><option>Confirmado</option></select>
       </div>
-    </section>
+      <div class="f md"><label>Resultado</label><input id="flagO2" readonly></div>
+    </div>
+    <div class="note">LTOT indicado si PaO₂ ≤55 o SaO₂ ≤88; o PaO₂ 56–59 / SaO₂ 89 con Hto &gt;55% o cor pulmonale.</div>
+  </section>
 
-    <!-- 2) Síntomas y espirometría -->
-    <section class="card">
-      <h2>2) Síntomas y espirometría</h2>
-      <div class="grid">
-        <div>
-          <label>mMRC (0–4)</label>
-          <input id="mmrc" type="number" min="0" max="4" value="0">
-        </div>
-        <div>
-          <label>CAT (0–40)</label>
-          <input id="cat" type="number" min="0" max="40" value="0">
-        </div>
-        <div>
-          <label>FEV1 % predicho</label>
-          <input id="fev1" type="number" min="0" max="150" placeholder="%" >
-        </div>
-        <div>
-          <label>FVC % predicho (opcional)</label>
-          <input id="fvc" type="number" min="0" max="150" placeholder="%">
-        </div>
-      </div>
-
-      <div class="kpi">
-        <div class="box"><span>Síntomas</span><b id="kpi-sintomas">Bajos</b><span class="hint">mMRC≥2 o CAT≥10 → Altos</span></div>
-        <div class="box"><span>Riesgo</span><b id="kpi-riesgo">Bajo</b><span class="hint">Exacerbaciones ≥2 o 1 con ingreso → Alto</span></div>
-        <div class="box"><span>GOLD (orientativo)</span><b id="kpi-gold">Pendiente</b><span class="hint">Basado en FEV1 %</span></div>
-      </div>
-    </section>
-
-    <!-- 3) Comorbilidades / hallazgos -->
-    <section class="card">
-      <h2>3) Comorbilidades y hallazgos</h2>
-      <div class="row" style="flex-wrap:wrap">
-        <span class="pill">HTA</span><span class="pill">DM2</span><span class="pill">Cardiopatía</span>
-        <span class="pill">FA</span><span class="pill">ERC</span><span class="pill">Ansiedad/Depresión</span>
-      </div>
-      <label style="margin-top:10px">Notas</label>
-      <textarea id="notas" placeholder="Otros hallazgos relevantes, saturación basal, Rx/TC, eosinófilos, etc."></textarea>
-    </section>
-
-    <!-- 4) Plan y salida -->
-    <section class="card">
-      <h2>4) Plan y salida</h2>
-      <div class="grid">
-        <div>
-          <label>Tratamiento inhalado propuesto</label>
-          <input id="tx" placeholder="LABA/LAMA/ICS…">
-        </div>
-        <div>
-          <label>Vacunación</label>
-          <input id="vac" placeholder="Influenza, Neumococo…">
-        </div>
-        <div>
-          <label>Rehabilitación respiratoria</label>
-          <select id="rehab">
-            <option>Pendiente</option><option>Indicada</option><option>En curso</option><option>No aplica</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="row" style="margin-top:10px;gap:8px">
-        <button class="btn primary" id="btn-resumen">Generar resumen</button>
-        <button class="btn" id="btn-copiar">Copiar</button>
-        <span class="hint">El resumen no guarda datos; úsalo para tu nota clínica.</span>
-      </div>
-
-      <label style="margin-top:12px">Salida — Bloque delimitado</label>
-      <textarea id="salida" readonly></textarea>
-    </section>
-  </main>
-
+  <div class="bar">
+    <button id="btnCalc" class="primary">Calcular</button>
+    <button id="btnClear">Limpiar</button>
+  </div>
+</main>
 <script>
-  // Utilidades simples
-  const $ = sel => document.querySelector(sel);
-  const valN = id => Number((document.getElementById(id).value||"").replace(',','.')) || 0;
+  const $ = id => document.getElementById(id);
+  const num = id => { const v = parseFloat($(id).value); return isNaN(v)? null : v };
+  const val = id => ($(id).value||'').trim();
 
-  function clasSintomas(mmrc, cat){
-    const altos = (mmrc >= 2) || (cat >= 10);
-    return altos ? "Altos" : "Bajos";
-  }
-  function clasRiesgo(exac){ return (exac >= 2) ? "Alto" : "Bajo"; }
-  function clasGOLD(fev1){
-    if(!fev1) return "Pendiente";
-    if(fev1 >= 80) return "GOLD 1";
-    if(fev1 >= 50) return "GOLD 2";
-    if(fev1 >= 30) return "GOLD 3";
-    return "GOLD 4";
+  function calcIMC(){
+    const p=num('peso'), a=num('altura');
+    if(p && a){ const m=a/100; $('imc').value=(p/(m*m)).toFixed(1); } else { $('imc').value=''; }
   }
 
-  function actualizarKPIs(){
-    const mmrc = valN("mmrc"), cat = valN("cat"), exac = valN("exac"), fev1 = valN("fev1");
-    $("#kpi-sintomas").textContent = clasSintomas(mmrc, cat);
-    $("#kpi-riesgo").textContent = clasRiesgo(exac);
-    $("#kpi-gold").textContent = clasGOLD(fev1);
+  function sintomasAltos(){ const m=parseInt(val('mmrc')); const c=num('cat'); return (m>=2) || (c!==null && c>=10); }
+  function riesgoAlto(){ const e=parseInt(val('exacs'))||0; const h=parseInt(val('exacsHosp'))||0; return (e>=2)||(h>=1); }
+
+  function goldGrupo(){ if(riesgoAlto()) return 'E'; return sintomasAltos()? 'B':'A'; }
+  function goldGrado(){ const f=num('fev1pct'); if(f==null) return '—'; if(f>=80) return 'GOLD 1'; if(f>=50) return 'GOLD 2'; if(f>=30) return 'GOLD 3'; return 'GOLD 4'; }
+
+  function scoreBODE(){
+    const imc=num('imc'), fev=num('fev1pct'), m=parseInt(val('mmrc')), d=num('sixmwd');
+    if(imc==null||fev==null||isNaN(m)||d==null) return null;
+    const B=(imc<21)?1:0;
+    const O=(fev>=65)?0:(fev>=50)?1:(fev>=36)?2:3;
+    const D=(m<=1)?0:(m===2)?1:(m===3)?2:3;
+    const E=(d>=350)?0:(d>=250)?1:(d>=150)?2:3;
+    return B+O+D+E;
   }
-  ["mmrc","cat","exac","fev1"].forEach(id => document.getElementById(id).addEventListener("input", actualizarKPIs));
-  actualizarKPIs();
-
-  function generarResumen(){
-    const nombre = $("#nombre").value || "Paciente";
-    const edad = $("#edad").value || "—";
-    const mmrc = $("#mmrc").value || "—";
-    const cat = $("#cat").value || "—";
-    const exac = $("#exac").value || 0;
-    const fev1 = $("#fev1").value || "—";
-    const taba = $("#tabaquismo").value;
-    const gold = $("#kpi-gold").textContent;
-    const sint = $("#kpi-sintomas").textContent;
-    const riesgo = $("#kpi-riesgo").textContent;
-    const tx = $("#tx").value || "A definir";
-    const vac = $("#vac").value || "Pendiente";
-    const rehab = $("#rehab").value;
-    const notas = $("#notas").value || "";
-
-    const bloque = [
-      "----- EPOC | Evaluación y Estratificación -----",
-      `Paciente: ${nombre} | Edad: ${edad} | Tabaquismo: ${taba}`,
-      `Síntomas: mMRC ${mmrc} / CAT ${cat} → ${sint}`,
-      `Exacerbaciones último año: ${exac} → Riesgo ${riesgo}`,
-      `Espirometría: FEV1 % ${fev1} → ${gold}`,
-      `Plan: ${tx} | Rehabilitación: ${rehab} | Vacunación: ${vac}`,
-      (notas ? `Notas: ${notas}` : ""),
-      "-----------------------------------------------"
-    ].filter(Boolean).join("\n");
-    $("#salida").value = bloque;
+  function scoreBODEx(){
+    const imc=num('imc'), fev=num('fev1pct'), m=parseInt(val('mmrc')), ex=parseInt(val('exacs'))||0;
+    if(imc==null||fev==null||isNaN(m)) return null;
+    const B=(imc<21)?1:0;
+    const O=(fev>=65)?0:(fev>=50)?1:(fev>=36)?2:3;
+    const D=(m<=1)?0:(m===2)?1:(m===3)?2:3;
+    const X=(ex===0)?0:(ex<=2?1:2);
+    return B+O+D+X;
   }
-  $("#btn-resumen").addEventListener("click", generarResumen);
 
-  $("#btn-copiar").addEventListener("click", async () => {
-    try{ await navigator.clipboard.writeText($("#salida").value); $("#btn-copiar").textContent = "¡Copiado!"; setTimeout(()=>$("#btn-copiar").textContent="Copiar",1400); }
-    catch{ alert("No se pudo copiar. Selecciona y copia manualmente."); }
-  });
+  function flagOxigeno(){
+    const pao2=num('pao2'), sao2=num('sao2'), hto=num('hto'); const cor=val('corpulmonale');
+    const c1=(pao2!==null && pao2<=55)||(sao2!==null && sao2<=88);
+    const c2=((pao2!==null && pao2>=56 && pao2<=59)||(sao2!==null && sao2==89)) && ((hto!==null && hto>55)||cor==='Confirmado');
+    $('flagO2').value=(c1||c2)?'Indicado':'No indicado';
+  }
+
+  function render(){
+    calcIMC();
+    $('goldGrupo').textContent=goldGrupo();
+    $('goldGrado').textContent=goldGrado();
+    const b=scoreBODE(); $('bode').textContent=(b==null?'—':b);
+    const bx=scoreBODEx(); $('bodex').textContent=(bx==null?'—':bx);
+    flagOxigeno();
+  }
+
+  // Listeners (input y change)
+  ['peso','altura','mmrc','cat','fev1pct','sixmwd','exacs','exacsHosp','sao2','pao2','hto','corpulmonale']
+    .forEach(id=>{ const el=$(id); if(!el) return; ['input','change'].forEach(evt=>el.addEventListener(evt,render)); });
+
+  $('btnCalc').addEventListener('click',render);
+  $('btnClear').addEventListener('click',()=>{ document.querySelectorAll('input,select').forEach(el=>{ if(el.tagName==='SELECT') el.selectedIndex=0; else el.value=''; }); render(); });
+
+  // Primera pasada
+  render();
+</script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>EPOC — GOLD/BODE/BODEx (funcional)</title>
+<style>
+  :root{--bg:#0b1220;--card:#111827;--txt:#e5e7eb;--mut:#a3a3a3;--ok:#10b981;--warn:#f59e0b;--bad:#ef4444}
+  *{box-sizing:border-box} body{margin:0;font-family:system-ui,Segoe UI,Roboto;background:var(--bg);color:var(--txt)}
+  header{padding:.9rem 1rem;background:#0f172a;border-bottom:1px solid #1f2937;text-align:center}
+  main{max-width:860px;margin:0 auto;padding:1rem}
+  section{background:var(--card);border:1px solid #1f2937;border-radius:14px;padding:1rem;margin:.8rem 0}
+  h2{margin:.2rem 0 1rem 0;font-size:1.05rem}
+  .row{display:grid;gap:.7rem}
+  @media(min-width:760px){.row{grid-template-columns:repeat(12,1fr)}}
+  .f{display:flex;flex-direction:column;gap:.35rem;grid-column:span 12}
+  .sm{grid-column:span 6}.md{grid-column:span 4}
+  label{font-size:.85rem;color:#cbd5e1}
+  input,select{background:#0b1220;border:1px solid #233046;color:var(--txt);padding:.55rem .65rem;border-radius:10px}
+  .kpi{display:grid;grid-template-columns:repeat(2,1fr);gap:.6rem}
+  .k{border:1px solid #233046;border-radius:10px;padding:.55rem}
+  .k .l{font-size:.75rem;color:#9ca3af}.k .v{font-weight:700}
+  .bar{position:sticky;bottom:10px;display:flex;gap:.5rem;justify-content:center}
+  button{border-radius:10px;border:1px solid #334155;background:#101827;color:#fff;padding:.55rem .9rem;cursor:pointer}
+  button.primary{background:linear-gradient(90deg,#0ea5b7,#7c3aed);border:none}
+  .note{font-size:.8rem;color:var(--mut)}
+</style>
+</head>
+<body>
+<header><h1>EPOC — GOLD / BODE / BODEx</h1></header>
+<main>
+  <section>
+    <h2>1) Datos básicos</h2>
+    <div class="row">
+      <div class="f md"><label>Peso (kg)</label><input id="peso" type="number" inputmode="decimal"></div>
+      <div class="f md"><label>Altura (cm)</label><input id="altura" type="number" inputmode="decimal"></div>
+      <div class="f md"><label>IMC</label><input id="imc" readonly></div>
+      <div class="f md"><label>mMRC (0–4)</label>
+        <select id="mmrc"><option value="">—</option><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option></select>
+      </div>
+      <div class="f md"><label>CAT (0–40)</label><input id="cat" type="number" min="0" max="40"></div>
+      <div class="f md"><label>FEV₁ % predicho</label><input id="fev1pct" type="number" min="0" max="200" step="0.1"></div>
+      <div class="f md"><label>6MWD (m)</label><input id="sixmwd" type="number" step="1"></div>
+      <div class="f md"><label>Exacerbaciones 12m</label><input id="exacs" type="number" min="0" step="1" value="0"></div>
+      <div class="f md"><label>Con hospitalización</label><input id="exacsHosp" type="number" min="0" step="1" value="0"></div>
+    </div>
+    <div class="note">Síntomas altos si CAT ≥ 10 o mMRC ≥ 2. Riesgo alto si ≥2 exacerbaciones o ≥1 con hospitalización.</div>
+  </section>
+
+  <section>
+    <h2>2) Clasificación automática</h2>
+    <div class="kpi">
+      <div class="k"><div class="l">Grupo GOLD</div><div id="goldGrupo" class="v">—</div></div>
+      <div class="k"><div class="l">Grado GOLD (FEV₁)</div><div id="goldGrado" class="v">—</div></div>
+      <div class="k"><div class="l">BODE (0–10)</div><div id="bode" class="v">—</div></div>
+      <div class="k"><div class="l">BODEx (0–9)</div><div id="bodex" class="v">—</div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>3) Oxígeno (bandera)</h2>
+    <div class="row">
+      <div class="f md"><label>SaO₂ reposo (%)</label><input id="sao2" type="number" step="0.1"></div>
+      <div class="f md"><label>PaO₂ (mmHg)</label><input id="pao2" type="number" step="0.1"></div>
+      <div class="f md"><label>Hematocrito (%)</label><input id="hto" type="number" step="0.1"></div>
+      <div class="f md"><label>Cor pulmonale</label>
+        <select id="corpulmonale"><option>No</option><option>En estudio</option><option>Confirmado</option></select>
+      </div>
+      <div class="f md"><label>Resultado</label><input id="flagO2" readonly></div>
+    </div>
+    <div class="note">LTOT indicado si PaO₂ ≤55 o SaO₂ ≤88; o PaO₂ 56–59 / SaO₂ 89 con Hto &gt;55% o cor pulmonale.</div>
+  </section>
+
+  <div class="bar">
+    <button id="btnCalc" class="primary">Calcular</button>
+    <button id="btnClear">Limpiar</button>
+  </div>
+</main>
+<script>
+  const $ = id => document.getElementById(id);
+  const num = id => { const v = parseFloat($(id).value); return isNaN(v)? null : v };
+  const val = id => ($(id).value||'').trim();
+
+  function calcIMC(){
+    const p=num('peso'), a=num('altura');
+    if(p && a){ const m=a/100; $('imc').value=(p/(m*m)).toFixed(1); } else { $('imc').value=''; }
+  }
+
+  function sintomasAltos(){ const m=parseInt(val('mmrc')); const c=num('cat'); return (m>=2) || (c!==null && c>=10); }
+  function riesgoAlto(){ const e=parseInt(val('exacs'))||0; const h=parseInt(val('exacsHosp'))||0; return (e>=2)||(h>=1); }
+
+  function goldGrupo(){ if(riesgoAlto()) return 'E'; return sintomasAltos()? 'B':'A'; }
+  function goldGrado(){ const f=num('fev1pct'); if(f==null) return '—'; if(f>=80) return 'GOLD 1'; if(f>=50) return 'GOLD 2'; if(f>=30) return 'GOLD 3'; return 'GOLD 4'; }
+
+  function scoreBODE(){
+    const imc=num('imc'), fev=num('fev1pct'), m=parseInt(val('mmrc')), d=num('sixmwd');
+    if(imc==null||fev==null||isNaN(m)||d==null) return null;
+    const B=(imc<21)?1:0;
+    const O=(fev>=65)?0:(fev>=50)?1:(fev>=36)?2:3;
+    const D=(m<=1)?0:(m===2)?1:(m===3)?2:3;
+    const E=(d>=350)?0:(d>=250)?1:(d>=150)?2:3;
+    return B+O+D+E;
+  }
+  function scoreBODEx(){
+    const imc=num('imc'), fev=num('fev1pct'), m=parseInt(val('mmrc')), ex=parseInt(val('exacs'))||0;
+    if(imc==null||fev==null||isNaN(m)) return null;
+    const B=(imc<21)?1:0;
+    const O=(fev>=65)?0:(fev>=50)?1:(fev>=36)?2:3;
+    const D=(m<=1)?0:(m===2)?1:(m===3)?2:3;
+    const X=(ex===0)?0:(ex<=2?1:2);
+    return B+O+D+X;
+  }
+
+  function flagOxigeno(){
+    const pao2=num('pao2'), sao2=num('sao2'), hto=num('hto'); const cor=val('corpulmonale');
+    const c1=(pao2!==null && pao2<=55)||(sao2!==null && sao2<=88);
+    const c2=((pao2!==null && pao2>=56 && pao2<=59)||(sao2!==null && sao2==89)) && ((hto!==null && hto>55)||cor==='Confirmado');
+    $('flagO2').value=(c1||c2)?'Indicado':'No indicado';
+  }
+
+  function render(){
+    calcIMC();
+    $('goldGrupo').textContent=goldGrupo();
+    $('goldGrado').textContent=goldGrado();
+    const b=scoreBODE(); $('bode').textContent=(b==null?'—':b);
+    const bx=scoreBODEx(); $('bodex').textContent=(bx==null?'—':bx);
+    flagOxigeno();
+  }
+
+  // Listeners (input y change)
+  ['peso','altura','mmrc','cat','fev1pct','sixmwd','exacs','exacsHosp','sao2','pao2','hto','corpulmonale']
+    .forEach(id=>{ const el=$(id); if(!el) return; ['input','change'].forEach(evt=>el.addEventListener(evt,render)); });
+
+  $('btnCalc').addEventListener('click',render);
+  $('btnClear').addEventListener('click',()=>{ document.querySelectorAll('input,select').forEach(el=>{ if(el.tagName==='SELECT') el.selectedIndex=0; else el.value=''; }); render(); });
+
+  // Primera pasada
+  render();
 </script>
 </body>
 </html>
