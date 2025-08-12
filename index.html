@@ -13,70 +13,29 @@
   .sidebar{background:var(--panel);border-right:1px solid #243244;display:flex;flex-direction:column;gap:12px;padding:14px;overflow:auto}
   .search{display:flex;gap:8px}
   .search input{flex:1;padding:10px 12px;border:1px solid #324055;border-radius:10px;background:#0f1a2b;color:var(--text);outline:none}
-  .section{border:1px solid #2a364a;border-radius:12px;background:linear-gradient(180deg,#132035,#0f1a2b)}
+  .section{border:1px solid #2a364a;border-radius:12px;background:linear-gradient(180deg,#132035,#0f1a2b);margin-top:4px}
   .sec-head{display:flex;align-items:center;gap:10px;padding:10px 12px;cursor:pointer;user-select:none}
-  .sec-head span{font-weight:600}
-  .chev{margin-left:auto;transition:transform .15s}
-  .open .chev{transform:rotate(90deg)}
-  .sec-body{display:none;padding:6px 10px 10px}
+  .sec-head span{font-weight:600} .chev{margin-left:auto;transition:transform .15s}
+  .open .chev{transform:rotate(90deg)} .sec-body{display:none;padding:6px 10px 10px}
   .open .sec-body{display:block}
-  .item, .subitem{display:block;padding:9px 10px;margin:6px 0;border:1px solid #2a364a;border-radius:10px;background:#122036;color:var(--text);text-decoration:none;transition:transform .06s,border .12s}
-  .item:hover,.subitem:hover{transform:translateY(-1px);border-color:#3a4d68}
+  .label{color:var(--muted);font-size:12px;margin:8px 0 4px}
+  .subitem{display:block;padding:9px 10px;margin:6px 0;border:1px solid #2a364a;border-radius:10px;background:#122036;color:var(--text);text-decoration:none;transition:transform .06s,border .12s}
+  .subitem:hover{transform:translateY(-1px);border-color:#3a4d68}
   .active{border-color:var(--accent)!important;box-shadow:0 0 0 1px #22d3ee33 inset}
-  .muted{color:var(--muted);font-size:12px}
-  .content{position:relative}
-  .frame-wrap{position:sticky;top:64px;height:calc(100vh - 64px)}
+  .content{position:relative} .frame-wrap{position:sticky;top:64px;height:calc(100vh - 64px)}
   iframe{width:100%;height:100%;border:0;background:#0b1220}
-  @media (max-width: 900px){
-    .app{grid-template-columns:1fr;grid-template-rows:auto auto 1fr}
-    .frame-wrap{position:static;height:70vh}
-  }
+  @media (max-width: 900px){.app{grid-template-columns:1fr;grid-template-rows:auto auto 1fr}.frame-wrap{position:static;height:70vh}}
 </style>
 </head>
 <body>
   <div class="app">
-    <header><h1>Menú clínico | Pulmón & Sueño</h1></header>
+    <header><h1 id="title">Menú clínico | Pulmón & Sueño</h1></header>
 
     <aside class="sidebar">
       <div class="search">
         <input id="q" type="search" placeholder="Filtra (p. ej. 6mwt, espirometría, EPOC, asma, sueño)..." />
       </div>
-
-      <!-- Sección: Pruebas de función pulmonar -->
-      <section class="section open" data-tags="pruebas funcion pulmonar espirometria pletismografia 6mwt caminata">
-        <div class="sec-head"><span>Pruebas de función pulmonar</span><div class="chev">▶</div></div>
-        <div class="sec-body">
-          <div class="muted">Caminata de 6 minutos</div>
-          <a class="subitem" data-tags="6mwt muda troosters casas bogota" href="pruebas-funcion-pulmonar/6mwt/6mwt_mudo_v0_6.html">6MWT — Versión muda</a>
-          <a class="subitem" data-tags="6mwt voz troosters casas bogota" href="pruebas-funcion-pulmonar/6mwt/6mwt_voz.html">6MWT — Versión con voz</a>
-
-          <div class="muted" style="margin-top:10px">Espirometría</div>
-          <!-- Ejemplos futuros (déjalos cuando existan)
-          <a class="subitem" data-tags="espirometria pre post ats" href="pruebas-funcion-pulmonar/espirometria/espiro_pre_post.html">Espirometría Pre/Post</a>
-          -->
-        </div>
-      </section>
-
-      <!-- Sección: Patologías -->
-      <section class="section" data-tags="patologias epoc asma sueno aasm">
-        <div class="sec-head"><span>Patologías</span><div class="chev">▶</div></div>
-        <div class="sec-body">
-          <div class="muted">EPOC</div>
-          <!-- Ejemplos futuros:
-          <a class="subitem" data-tags="epoc gold gesepoc bodex" href="patologias/epoc/epoc_evaluacion.html">Evaluación y estratificación EPOC</a>
-          -->
-
-          <div class="muted" style="margin-top:10px">Asma</div>
-          <!--
-          <a class="subitem" data-tags="asma gina control exacerbacion" href="patologias/asma/asma_control.html">Plan de control de asma</a>
-          -->
-
-          <div class="muted" style="margin-top:10px">Sueño</div>
-          <!--
-          <a class="subitem" data-tags="sueno aasm psg cpap titulación" href="patologias/sueno/psg_cpap.html">PSG / CPAP (AASM)</a>
-          -->
-        </div>
-      </section>
+      <div id="nav"></div>
     </aside>
 
     <main class="content">
@@ -90,55 +49,84 @@
   const LS_KEY = "hub:last";
   const viewer = document.getElementById('viewer');
   const q = document.getElementById('q');
+  const nav = document.getElementById('nav');
 
-  // Plegado de secciones
-  document.querySelectorAll('.sec-head').forEach(h=>{
-    h.addEventListener('click', ()=> h.parentElement.classList.toggle('open'));
-  });
+  const $el = (tag, cls, txt) => {
+    const e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (txt) e.textContent = txt;
+    return e;
+  };
 
-  // Navegación
+  fetch('manifest.json')
+    .then(r => r.json())
+    .then(data => {
+      if (data.title) document.getElementById('title').textContent = data.title;
+      buildMenu(data.sections || []);
+      applyFilter();
+      loadFromHashOrLast();
+      window.addEventListener('hashchange', loadFromHashOrLast);
+      q.addEventListener('input', applyFilter);
+    })
+    .catch(err => {
+      console.error('No se pudo cargar manifest.json', err);
+      nav.textContent = 'Error cargando el menú.';
+    });
+
+  function buildMenu(sections){
+    nav.innerHTML = '';
+    sections.forEach(sec => {
+      const section = $el('section','section open');
+      section.dataset.tags = (sec.tags||'');
+      const head = $el('div','sec-head');
+      head.append($el('span','',sec.name||'Sección'));
+      const chev = $el('div','chev','▶'); head.append(chev);
+      head.addEventListener('click',()=>section.classList.toggle('open'));
+      section.append(head);
+
+      const body = $el('div','sec-body');
+      (sec.groups||[]).forEach(g=>{
+        if (g.label) body.append($el('div','label',g.label));
+        (g.items||[]).forEach(item=>{
+          const a = $el('a','subitem',item.title||item.href);
+          a.href = item.href; a.dataset.tags = (item.tags||'');
+          a.addEventListener('click',e=>{e.preventDefault(); load(a.getAttribute('href'));});
+          body.append(a);
+        });
+      });
+      section.append(body);
+      nav.append(section);
+    });
+  }
+
   function load(href){
     document.querySelectorAll('.subitem').forEach(a=>a.classList.toggle('active', a.getAttribute('href')===href));
     viewer.src = href;
     localStorage.setItem(LS_KEY, href);
     location.hash = encodeURIComponent(href);
   }
-  document.querySelectorAll('.subitem').forEach(a=>{
-    a.addEventListener('click', e=>{
-      e.preventDefault();
-      load(a.getAttribute('href'));
-    });
-  });
 
-  // Carga por hash o último usado
   function loadFromHashOrLast(){
     const hash = decodeURIComponent(location.hash.replace(/^#/, ""));
     const target = hash || localStorage.getItem(LS_KEY) || "";
     if (target) load(target);
   }
 
-  // Filtro simple por texto (muestra/oculta secciones/items)
   function applyFilter(){
     const term = (q.value||"").toLowerCase().trim();
     document.querySelectorAll('.section').forEach(sec=>{
       const secTags = (sec.dataset.tags||"").toLowerCase();
-      let sectionHasMatch = !term || secTags.includes(term);
       let anyItemVisible = false;
       sec.querySelectorAll('.subitem').forEach(a=>{
         const hay = !term || (a.textContent.toLowerCase().includes(term) || (a.dataset.tags||"").toLowerCase().includes(term));
         a.style.display = hay ? "" : "none";
         anyItemVisible = anyItemVisible || hay;
       });
-      // Mostrar sección si coincide o si algún hijo coincide
-      sec.style.display = (sectionHasMatch || anyItemVisible) ? "" : "none";
+      const showSection = !term || anyItemVisible || secTags.includes(term);
+      sec.style.display = showSection ? "" : "none";
       if (term && anyItemVisible) sec.classList.add('open');
     });
   }
-  q.addEventListener('input', applyFilter);
-
-  applyFilter();
-  loadFromHashOrLast();
-  window.addEventListener('hashchange', loadFromHashOrLast);
 </script>
 </body>
 </html>

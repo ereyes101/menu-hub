@@ -1,0 +1,39 @@
+{
+  "title": "Menú clínico | Pulmón & Sueño",
+  "sections": [
+    {
+      "name": "Pruebas de función pulmonar",
+      "tags": "pruebas funcion pulmonar espirometria pletismografia 6mwt caminata",
+      "groups": [
+        {
+          "label": "Caminata de 6 minutos",
+          "items": [
+            {
+              "title": "6MWT — Versión muda",
+              "href": "pruebas-funcion-pulmonar/6mwt/6mwt_mudo_v0_6.html",
+              "tags": "6mwt muda troosters casas bogota"
+            },
+            {
+              "title": "6MWT — Versión con voz",
+              "href": "pruebas-funcion-pulmonar/6mwt/6mwt_voz.html",
+              "tags": "6mwt voz troosters casas bogota"
+            }
+          ]
+        },
+        {
+          "label": "Espirometría",
+          "items": []
+        }
+      ]
+    },
+    {
+      "name": "Patologías",
+      "tags": "patologias epoc asma sueno aasm",
+      "groups": [
+        { "label": "EPOC",  "items": [] },
+        { "label": "Asma",  "items": [] },
+        { "label": "Sueño", "items": [] }
+      ]
+    }
+  ]
+}
