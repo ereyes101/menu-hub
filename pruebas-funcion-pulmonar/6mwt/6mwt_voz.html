@@ -1,0 +1,661 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>6MWT • App clínica (v0.3)</title>
+  <style>
+    :root{--bg:#fff;--card:#fff;--ink:#111;--muted:#555;--line:#ddd;--accent:#0066cc;}
+    *{box-sizing:border-box}
+    body{margin:0;background:#fff;color:var(--ink);font:16px/1.4 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial}
+    header{padding:18px 24px;border-bottom:1px solid var(--line);backdrop-filter:blur(8px);position:sticky;top:0;z-index:5}
+    h1{margin:0;font-weight:800;letter-spacing:.3px;font-size:clamp(18px,3vw,24px)}
+    main{max-width:1100px;margin:24px auto;padding:0 16px 80px}
+    .grid{display:grid;gap:16px}
+    @media(min-width:960px){.grid{grid-template-columns:1.1fr 1fr}}
+    .card{background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:none}
+    .card h2{margin:0;padding:14px 16px;border-bottom:1px solid var(--line);font-size:18px}
+    .card .content{padding:14px 16px}
+    .row{display:grid;gap:12px;grid-template-columns:repeat(12,1fr);align-items:end}
+    .row>label{display:flex;flex-direction:column;gap:6px}
+    .row input,.row select,.row textarea{background:#fff;border:1px solid #bbb;color:#000;padding:10px 12px;border-radius:12px;outline:none}
+    .row small{color:var(--muted)}
+    .span-3{grid-column:span 3}.span-4{grid-column:span 4}.span-6{grid-column:span 6}.span-8{grid-column:span 8}.span-12{grid-column:span 12}
+    button{appearance:none;border:1px solid var(--line);background:var(--chip);color:var(--ink);padding:10px 14px;border-radius:12px;cursor:pointer}
+    button:hover{filter:brightness(1.08)}
+    .btn-row{display:flex;gap:10px;flex-wrap:wrap}
+    .tag{display:inline-flex;align-items:center;gap:8px;padding:8px 10px;border-radius:999px;background:#f0f0f0;border:1px solid #c9c9c9;color:#333;font-size:12px}
+    .danger{background:#f7f7f7;border-color:#d0d0d0;color:#333}
+    .ok{background:#f7f7f7;border-color:#d0d0d0;color:#333}
+    .warn{background:#f7f7f7;border-color:#d0d0d0;color:#333}
+    .kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:10px}
+    .kpi .box{background:#fff;border:1px solid #c9c9c9;border-radius:14px;padding:12px}
+    .box h3{margin:0 0 4px;font-size:13px;color:var(--muted)}
+    .box .val{font-size:24px;font-weight:900;color:#000}
+    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace}
+    .foot{opacity:.8;font-size:12px;margin-top:8px}
+    .list{display:grid;gap:8px}
+    .list label{display:flex;align-items:flex-start;gap:10px}
+    .list input[type=checkbox]{accent-color:#5dd3b3;margin-top:4px}
+    .minrow{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+    .minrow input{width:100%;text-align:center}
+    .pill{padding:6px 10px;border-radius:999px;background:#f3f4f6;border:1px solid #bdbdbd;color:#000}
+    .hr{border:0;height:1px;background:#ddd;margin:12px 0}
+    .muted{color:var(--muted)}
+    .right{display:flex;justify-content:flex-end}
+    .flex{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .credits{opacity:.7;font-size:12px;margin-top:14px}
+    .big{font-size:22px;font-weight:800}
+    #reloj{font-size:18px;padding:6px 10px} 
+    
+    details summary{cursor:pointer}
+    .link{color:var(--accent);text-decoration:none}
+    /* ===== Reporte PDF (estilos) ===== */
+  .report{display:none}
+  .print-only{display:none}
+  .r-wrap{max-width:720px;margin:0 auto;padding:12px}
+  .r-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+  .r-title{font-weight:800;font-size:22px;letter-spacing:.2px}
+  .r-sub{color:var(--muted);font-size:12px}
+  .r-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:8px}
+  .r-card{background:#fff;border:1px solid #d9d9d9;border-radius:14px;padding:10px}
+  .r-kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  .r-box{background:#fff;border:1px solid #d9d9d9;border-radius:12px;padding:10px}
+  .r-box h4{margin:0 0 4px;color:var(--muted);font-size:12px}
+  .r-box .val{font:700 20px/1.1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  .chart{width:100%;max-width:100%;height:200px;display:block;background:#fff;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+  .tbl{width:100%;border-collapse:collapse;font-size:12px}
+  .tbl th,.tbl td{border-bottom:1px solid var(--line);padding:6px;text-align:left}
+  .footnote{color:var(--muted);font-size:11px;margin-top:6px}
+  @page{size:Letter;margin:35mm 12mm 14mm 12mm}
+  @media print{
+    body{background:#fff;color:#000}
+    header,main,#beep{display:none!important}
+    #report{display:block!important}
+    .page{page-break-after:always}
+    .nobreak{page-break-inside:avoid}
+    :root{--ink:#000;--muted:#333;--line:#cfcfcf}
+    .r-card{background:#fff!important;border-color:#d9d9d9;color:#000}
+    .r-box{background:#fff!important;border:1px solid #d9d9d9}
+    .r-title{color:#000}
+    .r-sub{color:#333}
+    .chart{background:#fff;border-color:#d9d9d9}
+    .print-only{display:block}
+    *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="flex"><h1>Prueba de Caminata de 6 Minutos — 6MWT (v0.3)</h1><span class="tag">Guías ATS/ERS + GPC Colombia</span><span class="tag ok">Ecuación de A. Casas (Bogotá) integrada</span></div>
+  </header>
+  <main class="grid">
+
+    <!-- PANEL IZQUIERDO -->
+    <section class="card">
+      <h2>1) Datos y verificación previa</h2>
+      <div class="content">
+        <div class="row">
+          <label class="span-4">Nombre
+            <input id="p_nombre" placeholder="Opcional" />
+          </label>
+          <label class="span-4">Documento (ID)
+            <input id="p_id" placeholder="Opcional" />
+          </label>
+          <label class="span-4">Edad (años)
+            <input id="p_edad" type="number" min="10" max="100" step="1" required />
+          </label>
+          <label class="span-4">Sexo
+            <select id="p_sexo">
+              <option value="F">Femenino</option>
+              <option value="M">Masculino</option>
+            </select>
+          </label>
+          <label class="span-4">Talla (cm)
+            <input id="p_talla" type="number" min="120" max="220" step="0.1" required />
+          </label>
+          <label class="span-4">Peso (kg)
+            <input id="p_peso" type="number" min="20" max="250" step="0.1" />
+          </label>
+          <label class="span-4">Longitud entre conos (m)
+            <input id="p_pista" type="number" min="5" max="60" step="0.5" value="30" />
+            <small>Valor real disponible del corredor</small>
+          </label>
+          <label class="span-4">Ecuación de referencia
+            <select id="p_eq">
+              <option value="casas">Casas (Bogotá, 2640 m)</option>
+              <option value="troosters">Troosters (Eur Respir J 1999)</option>
+            </select>
+          </label>
+          <label class="span-4">Modo de voz
+            <select id="p_voz">
+              <option value="es-CO">es-CO (neutra colombiana)</option>
+              <option value="es-419">es-419 (latinoamérica)</option>
+              <option value="es-ES">es-ES</option>
+            </select>
+          </label>
+        </div>
+
+        <hr class="hr" />
+        <div class="grid" style="grid-template-columns:1fr 1fr;gap:14px">
+          <div>
+            <div class="tag warn">Checklist de seguridad (marcar todo antes de iniciar)</div>
+            <div class="list" id="chklist">
+              <label><input type="checkbox"/> Consentimiento/explicación dada, ropa y calzado adecuados</label>
+              <label><input type="checkbox"/> Vía libre, conos colocados y longitud medida</label>
+              <label><input type="checkbox"/> Esfigmo y pulsioxímetro listos (batería adecuada)</label>
+              <label><input type="checkbox"/> Medicación habitual tomada (si aplica)</label>
+              <label><input type="checkbox"/> Ausencia de contraindicaciones absolutas (inestabilidad hemodinámica, SCA, síncope reciente, etc.)</label>
+            </div>
+          </div>
+          <div>
+            <div class="tag">Signos vitales (previo)</div>
+            <div class="row">
+              <label class="span-4">FC (lpm) <input id="sv_fc_pre" type="number" step="1" /></label>
+              <label class="span-4">SpO₂ (%) <input id="sv_spo2_pre" type="number" step="1" /></label>
+              <label class="span-4">TA sist (mmHg) <input id="sv_ta_pre" type="number" step="1" /></label>
+              <label class="span-4">Borg disnea 0–10 <input id="borg_pre" type="number" min="0" max="10" step="1" /></label>
+            </div>
+            <div class="btn-row">
+              <button onclick="leerInstrucciones()">🔊 Instrucciones (estandarizadas)</button>
+              <div class="flex" style="align-items:center">
+                <span class="muted">Descanso previo:</span>
+                <select id="descanso_min">
+                  <option value="10" selected>10 min (ATS)</option>
+                  <option value="15">15 min (GPC Colombia)</option>
+                </select>
+                <button onclick="contarDescanso()">⏳ Iniciar descanso</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PANEL DERECHO: PREDICCIONES -->
+    <aside class="card">
+      <h2>Predicción (distancia esperada)</h2>
+      <div class="content">
+        <div class="kpi">
+          <div class="box"><h3>Predicho (m)</h3><div id="k_pred" class="val mono">—</div></div>
+          <div class="box"><h3>LLN (m)*</h3><div id="k_lln" class="val mono">—</div><div class="foot muted">*LLN con Casas (DE=46.9 m) y Troosters (DE≈56 m)</div></div>
+          <div class="box"><h3>R²</h3><div id="k_r2" class="val mono">—</div></div>
+          <div class="box"><h3>Ecuación</h3><div id="k_eq" class="val mono" style="font-size:13px">—</div></div>
+        </div>
+        <div class="credits">Notas: Casas (Bogotá) usa edad, talla (cm) y sexo; Troosters usa edad, talla, peso y sexo. La altura local (Bogotá ~2640 m) está incorporada implícitamente en Casas.</div>
+      </div>
+    </aside>
+
+    <!-- EJECUCIÓN DE LA PRUEBA -->
+    <section class="card">
+      <h2>2) Prueba (6 minutos)</h2>
+      <div class="content">
+        <div class="btn-row">
+          <button onclick="iniciarPrueba()">▶️ Iniciar prueba (6:00)</button>
+          <button onclick="marcarMinuto()">🔔 Marcar minuto</button>
+          <button onclick="finalizarPrueba()">■ Finalizar</button>
+          <span class="pill mono" id="reloj">06:00</span>
+        </div>
+        <div class="row" style="margin-top:12px">
+          <label class="span-3">SpO₂ min 1<input id="spo2_1" type="number" min="50" max="100" /></label>
+          <label class="span-3">SpO₂ min 2<input id="spo2_2" type="number" min="50" max="100" /></label>
+          <label class="span-3">SpO₂ min 3<input id="spo2_3" type="number" min="50" max="100" /></label>
+          <label class="span-3">SpO₂ min 4<input id="spo2_4" type="number" min="50" max="100" /></label>
+          <label class="span-3">SpO₂ min 5<input id="spo2_5" type="number" min="50" max="100" /></label>
+          <label class="span-3">SpO₂ min 6<input id="spo2_6" type="number" min="50" max="100" /></label>
+        </div>
+        <div class="row">
+          <label class="span-3">FC min 1<input id="fc_1" type="number" min="20" max="240" /></label>
+          <label class="span-3">FC min 2<input id="fc_2" type="number" min="20" max="240" /></label>
+          <label class="span-3">FC min 3<input id="fc_3" type="number" min="20" max="240" /></label>
+          <label class="span-3">FC min 4<input id="fc_4" type="number" min="20" max="240" /></label>
+          <label class="span-3">FC min 5<input id="fc_5" type="number" min="20" max="240" /></label>
+          <label class="span-3">FC min 6<input id="fc_6" type="number" min="20" max="240" /></label>
+        </div>
+        <div class="hr"></div>
+        <div class="row">
+          <div class="span-8">
+            <div class="pill">Vueltas (contador)</div>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:6px 0">
+              <button class="btn" id="btn_lap_plus">➕ Vuelta (+1)</button>
+              <button class="btn" id="btn_lap_undo">↩︎ Deshacer</button>
+              <span class="pill mono">Total: <span id="laps_disp">0</span></span>
+            </div>
+            <table><thead><tr><th>#</th><th>t (s)</th></tr></thead><tbody id="lap_tbody"></tbody></table>
+          </div>
+        </div>
+
+        <details>
+          <summary>Pausas y causas (registro)</summary>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin:6px 0">
+            <label>Causa
+              <select id="pause_cause">
+                <option value="disnea_intensa">Disnea intensa</option>
+                <option value="dolor_toracico">Dolor torácico</option>
+                <option value="mareo_inestabilidad">Mareo/Inestabilidad</option>
+                <option value="calambres_piernas">Calambres en piernas</option>
+                <option value="ajuste_oxigeno">Ajuste de oxígeno</option>
+                <option value="interferencia_pasillo">Interferencia en pasillo</option>
+                <option value="otra">Otra</option>
+              </select>
+            </label>
+            <button class="btn" id="btn_pause_start">⏸️ Iniciar pausa</button>
+            <button class="btn" id="btn_pause_end" disabled>▶️ Finalizar pausa</button>
+          </div>
+          <table>
+            <thead><tr><th>#</th><th>Inicio (s)</th><th>Fin (s)</th><th>Duración (s)</th><th>Causa</th></tr></thead>
+            <tbody id="pause_tbody"></tbody>
+          </table>
+        </details>
+
+        <div class="row">
+          <label class="span-4">Borg post (0–10)<input id="borg_post" type="number" min="0" max="10" step="1" /></label>
+          <label class="span-4">SpO₂ post (%)<input id="sv_spo2_post" type="number" step="1" /></label>
+          <label class="span-4">FC post (lpm)<input id="sv_fc_post" type="number" step="1" /></label>
+        </div>
+        <div class="row">
+          <label class="span-4">Vueltas completas<input id="laps" type="number" min="0" step="1" /></label>
+          <label class="span-4">Metros adicionales<input id="extra_m" type="number" min="0" step="0.5" /></label>
+          <label class="span-4">Observaciones
+            <textarea id="obs" rows="2" placeholder="Eventos, pausas, síntomas..."></textarea>
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <!-- RESULTADOS -->
+    <section class="card">
+      <h2>3) Resultados y exportación</h2>
+      <div class="content">
+        <div class="kpi">
+          <div class="box"><h3>Distancia (m)</h3><div id="k_m" class="val mono">—</div></div>
+          <div class="box"><h3>% del predicho</h3><div id="k_pct" class="val mono">—</div></div>
+          <div class="box"><h3>SpO₂ nadir (%)</h3><div id="k_nadir" class="val mono">—</div></div>
+          <div class="box"><h3>ΔSpO₂ (%)</h3><div id="k_delta" class="val mono">—</div></div>
+        </div>
+        <div class="kpi">
+          <div class="box"><h3>DDR (AUC/metros)</h3><div id="k_ddr" class="val mono">—</div><div class="foot muted">Área de desaturación / distancia</div></div>
+          <div class="box"><h3>DSP (m·%)</h3><div id="k_dsp" class="val mono">—</div><div class="foot muted">Distancia × SpO₂ nadir</div></div>
+          <div class="box"><h3>FC pico (lpm)</h3><div id="k_fcpico" class="val mono">—</div></div>
+          <div class="box"><h3>Velocidad (m/s)</h3><div id="k_vel" class="val mono">—</div></div>
+        </div>
+        <div class="btn-row right">
+          
+          <button id="btn_pdf" class="btn">🖨️ Reporte PDF</button>
+          <a id="dl" class="link" download style="display:none">Descargar archivo</a>
+        </div>
+        <div class="credits">Desarrollo: Dr. Eduardo Reyes S. (líder clínico) · Implementación: GPT-5 Thinking · © 2025. Uso clínico supervisado.</div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===== Reporte imprimible ===== -->
+  <section id="report" class="report">
+    <div class="r-wrap">
+      <div class="print-only" style="height:28mm"></div>
+      <div class="r-hdr">
+        <div>
+          <div class="r-title">Informe de Prueba de Caminata de 6 Minutos (6MWT)</div>
+          <div class="r-sub">Estandarizada según ATS/ERS + GPC Colombia • Predichos: Casas (Bogotá) y Troosters</div>
+        </div>
+        <div class="r-sub" id="r_datetime"></div>
+      </div>
+
+      <div class="r-grid" style="margin-bottom:8px">
+        <div class="r-card" style="grid-column:span 12">
+          <div class="r-grid">
+            <div style="grid-column:span 6">
+              <strong>Paciente:</strong> <span id="r_nombre">—</span><br/>
+              <strong>ID:</strong> <span id="r_id">—</span><br/>
+              <strong>Sexo:</strong> <span id="r_sexo">—</span> • <strong>Edad:</strong> <span id="r_edad">—</span> años
+            </div>
+            <div style="grid-column:span 6">
+              <strong>Talla:</strong> <span id="r_talla">—</span> cm • <strong>Peso:</strong> <span id="r_peso">—</span> kg • <strong>IMC:</strong> <span id="r_bmi">—</span><br/>
+              <strong>Pista:</strong> <span id="r_pista">—</span> m • <strong>Ecuación:</strong> <span id="r_eq">—</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="r-kpi">
+        <div class="r-box"><h4>Distancia (m)</h4><div id="r_dist" class="val">—</div></div>
+        <div class="r-box"><h4>% del predicho</h4><div id="r_pct" class="val">—</div></div>
+        <div class="r-box"><h4>Predicho / LLN (m)</h4><div class="val"><span id="r_pred">—</span> / <span id="r_lln">—</span></div></div>
+        <div class="r-box"><h4>Velocidad (m/s)</h4><div id="r_vel" class="val">—</div></div>
+      </div>
+
+      <div class="r-kpi" style="margin-top:8px">
+        <div class="r-box"><h4>SpO₂ nadir (%)</h4><div id="r_nadir" class="val">—</div></div>
+        <div class="r-box"><h4>ΔSpO₂ (%)</h4><div id="r_delta" class="val">—</div></div>
+        <div class="r-box"><h4>DDR (%·min/m)</h4><div id="r_ddr" class="val">—</div></div>
+        <div class="r-box"><h4>DSP (m·%)</h4><div id="r_dsp" class="val">—</div></div>
+      </div>
+
+      <div class="r-grid" style="margin-top:12px">
+        <div class="r-card nobreak" style="grid-column:span 12">
+          <div class="r-grid" style="grid-template-columns:1fr 1fr;gap:10px">
+            <div>
+              <div class="r-sub" style="margin-bottom:4px">Curva SpO₂ vs tiempo</div>
+              <canvas id="c_spo2" class="chart"></canvas>
+            </div>
+            <div>
+              <div class="r-sub" style="margin-bottom:4px">Curva FC vs tiempo</div>
+              <canvas id="c_hr" class="chart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="r-grid" style="margin-top:12px">
+        <div class="r-card" style="grid-column:span 7">
+          <strong>Serie por minuto</strong>
+          <table class="tbl">
+            <thead><tr><th>Min</th><th>SpO₂ (%)</th><th>FC (lpm)</th></tr></thead>
+            <tbody id="r_mins_body"></tbody>
+          </table>
+        </div>
+        <div class="r-card" style="grid-column:span 5">
+          <strong>Pausas y causas</strong>
+          <table class="tbl">
+            <thead><tr><th>#</th><th>Inicio (s)</th><th>Fin (s)</th><th>Dur (s)</th><th>Causa</th></tr></thead>
+            <tbody id="r_pause_body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="r-grid" style="margin-top:12px">
+        <div class="r-card" style="grid-column:span 12">
+          <strong>Descripción de la prueba</strong>
+          <div id="r_resumen" class="r-sub" style="color:#000"></div>
+        </div>
+        <div class="r-card" style="grid-column:span 12">
+          <strong>Interpretación</strong>
+          <div id="r_interpretacion" class="r-sub" style="color:#000"></div>
+        </div>
+      </div>
+
+      <div class="footnote">Notas: DDR = AUC(100−SpO₂)/distancia. DSP = distancia × SpO₂ nadir. Voz e instrucciones conforme ATS/ERS + GPC Colombia. Informe generado por 6MWT App v0.3 — Créditos: Dr. E. Reyes S. / GPT‑5 Thinking.</div>
+    </div>
+  </section>
+
+  <audio id="beep" preload="auto"><source src="data:audio/wav;base64,UklGRoYAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABYAZGF0YZAAAACAgICAgICAgP//AAD//wAA/v7+AAD/AAD///8AAP//AAD///8AAP8AAP7+/gAA/wAA////AAD//wAA////AAD/AAD+/v4AAP8AAP///wAA//8AAP///wAA/wAA/v7+AAD/AAD///8AAP//AAD///8AAP8AAP7+/gAA" type="audio/wav"></audio>
+  <script>
+    // ======= UTILIDADES =======
+    const $ = sel => document.querySelector(sel);
+    const speak = (text)=>{
+      try{
+        const u = new SpeechSynthesisUtterance(text);
+        u.lang = $('#p_voz')?.value || 'es-CO';
+        u.rate = 1.02; u.pitch = 1.0; u.volume = 1;
+        speechSynthesis.cancel(); speechSynthesis.speak(u);
+      }catch(e){console.warn('Speech error', e)}
+    };
+    const beep = ()=>{ const a=$('#beep'); if(!a) return; a.currentTime=0; a.play().catch(()=>{}); };
+    // Utilidades numéricas robustas (aceptan coma decimal y filtran símbolos)
+    const num = (v)=>{ const s=(v??'').toString().replace(',', '.').replace(/[^0-9.\-]/g,''); const n=parseFloat(s); return Number.isFinite(n)? n: NaN; };
+    const clamp = (v,lo,hi)=> Math.min(hi, Math.max(lo, v));
+
+    // ======= ECUACIONES DE REFERENCIA =======
+    // Casas A. et al., Bogotá (población sana a ~2640 m). R² ≈ 0.513
+    // 6MWDpred (m) = 453.621 + 1.445*talla_cm − 1.531*edad_años + 48.559*sexo(H=1, M=0)
+    function predCasas({edad, talla_cm, sexo}){
+      const male = (sexo === 'M') ? 1 : 0;
+      const pred = 453.621 + 1.445 * talla_cm - 1.531 * edad + 48.559 * male;
+      const sd = 46.8739; // DE residual de la cohorte de Bogotá
+      const lln = pred - 1.645 * sd;
+      return {pred, r2:0.513, lln, label:'Casas (Bogotá)'};
+    }
+    // Troosters T. et al., ERJ 1999. 6MWDpred = 218 + 5.14*height_cm − 5.32*age − 1.80*weight + 51.31*sex(male=1)
+    function predTroosters({edad, talla_cm, peso_kg, sexo}){
+      const male = (sexo === 'M') ? 1 : 0;
+      const pred = 218 + 5.14 * talla_cm - 5.32 * edad - 1.80 * (peso_kg||0) + 51.31 * male;
+      const lln = pred - 1.645 * 56; // DE residual ~56 m
+      return {pred, r2:0.66, lln, label:'Troosters (1999)'};
+    }
+
+    function actualizarPredicciones(){
+      const edad = +$('#p_edad')?.value || 0;
+      const talla_cm = +$('#p_talla')?.value || 0;
+      const peso_kg = +$('#p_peso')?.value || 0;
+      const sexo = $('#p_sexo')?.value || 'F';
+      const eq = $('#p_eq')?.value || 'casas';
+      const args = {edad, talla_cm, peso_kg, sexo};
+      const out = (eq==='casas') ? predCasas(args) : predTroosters(args);
+      $('#k_pred').textContent = isFinite(out.pred)? out.pred.toFixed(0) : '—';
+      $('#k_lln').textContent  = (out.lln!=null && isFinite(out.lln))? out.lln.toFixed(0) : '—';
+      $('#k_r2').textContent   = out.r2? out.r2.toFixed(3): '—';
+      $('#k_eq').textContent   = out.label;
+    }
+    ['p_edad','p_talla','p_peso','p_sexo','p_eq'].forEach(id=> $('#'+id)?.addEventListener('input', actualizarPredicciones));
+
+    // ======= INSTRUCCIONES Y DESCANSO =======
+    function leerInstrucciones(){
+      // Guion estandarizado (GPC Colombia + ATS). Adaptado para síntesis de voz.
+      const t = [
+        'Realizaremos la caminata de seis minutos. El objetivo es caminar lo más rápido que pueda durante seis minutos, sin correr.',
+        'Seguirá el trayecto entre los conos y dará la vuelta por detrás. Intentará hacer la mayor cantidad de vueltas posibles.',
+        'Puede disminuir el paso o detenerse si lo necesita; si se detiene, reanude lo antes posible. Si prefiere, puede descansar apoyándose en la pared.',
+        'No hable durante la prueba a menos que tenga algún problema; en ese caso me avisa y lo asistiremos de inmediato.',
+        'Colóquese en la línea de inicio y espere mi indicación. Le avisaré cada minuto y, en los últimos diez segundos, haré una cuenta regresiva.'
+      ].join(' ');
+      speak(t);
+    }
+    let descansoTimer=null, pruebaTimer=null, tRest=600, tRun=360;
+    let lapLog=[], pauseLog=[], pauseActive=null;
+    function formatear(s){const m=Math.floor(s/60).toString().padStart(2,'0');const r=(s%60).toString().padStart(2,'0');return `${m}:${r}`}
+    function contarDescanso(){
+      clearInterval(descansoTimer);
+      const mins = +($('#descanso_min')?.value||10);
+      tRest = mins*60;
+      $('#reloj').textContent=formatear(tRest);
+      speak(`Iniciamos el descanso previo de ${mins} minutos. Permanezca sentado y en reposo.`);
+      descansoTimer=setInterval(()=>{
+        tRest--; $('#reloj').textContent=formatear(tRest);
+        if(tRest%60===0){beep()}
+        if(tRest<=0){ clearInterval(descansoTimer); speak('Descanso finalizado. Podemos iniciar cuando esté listo.'); }
+      },1000);
+    }
+
+    // ======= PRUEBA =======
+    function iniciarPrueba(){
+      clearInterval(pruebaTimer); tRun=360; $('#reloj').textContent=formatear(tRun);
+      speak('Comience ahora. Camine lo más rápido que pueda sin correr.');
+      const PROMPTS = {
+        300:'Lo está haciendo bien, tiene cinco minutos más.',
+        240:'Está haciendo un muy buen trabajo, tiene cuatro minutos más.',
+        180:'Lo está haciendo bien, ha completado la mitad de la prueba.',
+        120:'Mantenga el trabajo que está haciendo, solo le faltan dos minutos.',
+        60:'Está haciendo un muy buen trabajo, solo le queda un minuto.'
+      };
+      pruebaTimer=setInterval(()=>{
+        tRun--; $('#reloj').textContent=formatear(tRun);
+        if(PROMPTS[tRun]){ beep(); speak(PROMPTS[tRun]); }
+        if(tRun===10){ beep(); speak('Diez segundos.'); }
+        if([5,4,3,2,1].includes(tRun)){ beep(); speak(String(tRun)); }
+        if(tRun<=0){ finalizarPrueba(); }
+      },1000);
+    }
+    function marcarMinuto(){ beep(); }
+
+    // ---- Contador de vueltas (lap) ----
+    function updateLapDisplays(){
+      const total = lapLog.length;
+      const d = $('#laps_disp'); if(d) d.textContent = String(total);
+      const input = $('#laps'); if(input) input.value = total;
+      const pista = num($('#p_pista')?.value);
+      const mEl = $('#m_acum'); if(mEl && Number.isFinite(pista)) mEl.textContent = (total*pista).toFixed(0)+' m';
+    }
+    function addLap(){
+      const t = 360 - (tRun||360);
+      lapLog.push({t});
+      const tb = $('#lap_tbody'); if(tb){ const tr=document.createElement('tr'); tr.innerHTML = `<td>${lapLog.length}</td><td>${t}</td>`; tb.appendChild(tr); }
+      updateLapDisplays(); beep();
+    }
+    function undoLap(){
+      if(!lapLog.length) return;
+      lapLog.pop();
+      const tb = $('#lap_tbody'); if(tb && tb.rows.length>0){ tb.deleteRow(tb.rows.length-1); }
+      updateLapDisplays();
+    }
+    $('#btn_lap_plus')?.addEventListener('click', addLap);
+    $('#btn_lap_undo')?.addEventListener('click', undoLap);
+    $('#laps')?.addEventListener('input', ()=>{ const n=+($('#laps')?.value||0); const d=$('#laps_disp'); if(d) d.textContent=String(n); const pista=num($('#p_pista')?.value); const mEl=$('#m_acum'); if(mEl && Number.isFinite(pista)) mEl.textContent=(n*pista).toFixed(0)+' m'; });
+    $('#p_pista')?.addEventListener('input', ()=>{ const laps=+($('#laps_disp')?.textContent||0); const pista=num($('#p_pista')?.value); const mEl=$('#m_acum'); if(mEl && Number.isFinite(pista)) mEl.textContent=(laps*pista).toFixed(0)+' m'; });
+
+    // ---- Pausas y causas ----
+    function renderPauses(){
+      const tb = $('#pause_tbody'); if(!tb) return;
+      tb.innerHTML='';
+      pauseLog.forEach((p,i)=>{ const tr=document.createElement('tr'); tr.innerHTML = `<td>${i+1}</td><td>${p.start}</td><td>${p.end}</td><td>${p.dur}</td><td>${p.cause}</td>`; tb.appendChild(tr); });
+    }
+    function startPause(){
+      if(pauseActive) return;
+      const cause = $('#pause_cause')?.value || 'otra';
+      const t = 360 - (tRun||360);
+      pauseActive = {start:t, cause};
+      const btnS=$('#btn_pause_start'), btnE=$('#btn_pause_end'); if(btnS) btnS.disabled=true; if(btnE) btnE.disabled=false;
+      speak('Puede descansar apoyándose en la pared si lo prefiere. El cronómetro continúa. Reanude la marcha cuando esté listo.');
+    }
+    function endPause(){
+      if(!pauseActive) return;
+      const end = 360 - (tRun||360);
+      const dur = Math.max(0, end - pauseActive.start);
+      pauseLog.push({start: pauseActive.start, end, dur, cause: pauseActive.cause});
+      pauseActive = null;
+      const btnS=$('#btn_pause_start'), btnE=$('#btn_pause_end'); if(btnS) btnS.disabled=false; if(btnE) btnE.disabled=true;
+      renderPauses();
+    }
+    $('#btn_pause_start')?.addEventListener('click', startPause);
+    $('#btn_pause_end')?.addEventListener('click', endPause);
+
+    function finalizarPrueba(){
+      if(pruebaTimer){ clearInterval(pruebaTimer); pruebaTimer=null; speak('Prueba finalizada. Registre los datos.'); }
+      calcularResultados();
+    }
+
+    // ======= CÁLCULOS =======
+    function calcularResultados(){
+      const pista = num($('#p_pista')?.value);
+      const laps  = num($('#laps')?.value);
+      const extra = num($('#extra_m')?.value);
+      const metros = (Number.isFinite(pista)&&Number.isFinite(laps))? (laps * pista + (Number.isFinite(extra)?extra:0)) : NaN;
+
+      const edad = num($('#p_edad')?.value);
+      const talla_cm = num($('#p_talla')?.value);
+      const peso_kg = num($('#p_peso')?.value);
+      const sexo = $('#p_sexo')?.value||'F';
+      const eq = $('#p_eq')?.value||'casas';
+      const out = (eq==='casas')? predCasas({edad,talla_cm,sexo}) : predTroosters({edad,talla_cm,peso_kg,sexo});
+
+      // SpO2 y FC
+      const spo2pre = num($('#sv_spo2_pre')?.value);
+      const spo2post = num($('#sv_spo2_post')?.value);
+      const spo2mins = [1,2,3,4,5,6].map(i=> num($('#spo2_'+i)?.value));
+      const fcmins = [1,2,3,4,5,6].map(i=> num($('#fc_'+i)?.value));
+
+      const spVals = [spo2pre,...spo2mins,spo2post].filter(Number.isFinite).map(v=> clamp(v,0,100));
+      const nadir = spVals.length? Math.min(...spVals) : NaN;
+      const delta = (Number.isFinite(spo2pre) && Number.isFinite(spo2post)) ? (spo2post - spo2pre) : NaN;
+
+      // DDR: área de desaturación (trapezoidal) respecto a 100%, por minuto, dividido por distancia.
+      let AUC=NaN, DDR=NaN;{
+        const series=[]; // pares [t, val]
+        if(Number.isFinite(spo2pre)) series.push([0,100-spo2pre]);
+        for(let i=0;i<6;i++){ if(Number.isFinite(spo2mins[i])) series.push([i+1,100-spo2mins[i]]); }
+        if(Number.isFinite(spo2post)) series.push([6,100-spo2post]);
+        if(series.length>=2){ let area=0; for(let i=0;i<series.length-1;i++){ const [t1,y1]=series[i], [t2,y2]=series[i+1]; area += (y1+y2)/2 * (t2-t1); } AUC=area; DDR = (Number.isFinite(metros) && metros>0)? (area/metros) : NaN; }
+      }
+      const DSP = (Number.isFinite(nadir) && Number.isFinite(metros) && metros>0) ? (metros * nadir) : NaN;
+      const fcpico = Math.max(...[...fcmins, num($('#sv_fc_post')?.value)].filter(Number.isFinite));
+      const vel = (Number.isFinite(metros) && metros>0)? (metros/360): NaN;
+
+      $('#k_m').textContent = Number.isFinite(metros)? metros.toFixed(1):'—';
+      $('#k_pct').textContent = (Number.isFinite(metros) && Number.isFinite(out.pred) && out.pred>0)? (100*metros/out.pred).toFixed(0)+' %':'—';
+      $('#k_nadir').textContent = Number.isFinite(nadir)? nadir.toFixed(1):'—';
+      $('#k_delta').textContent = Number.isFinite(delta)? delta.toFixed(1):'—';
+      $('#k_ddr').textContent = Number.isFinite(DDR)? DDR.toFixed(3):'—';
+      $('#k_dsp').textContent = Number.isFinite(DSP)? DSP.toFixed(0):'—';
+      $('#k_fcpico').textContent = Number.isFinite(fcpico)? fcpico.toFixed(0):'—';
+      $('#k_vel').textContent = Number.isFinite(vel)? vel.toFixed(2):'—';
+
+      actualizarPredicciones();
+    }
+
+    // ======= GRÁFICOS Y PDF =======
+    function setCanvasSize(cv,w,h){ const dpr=window.devicePixelRatio||1; cv.width=w*dpr; cv.height=h*dpr; cv.style.width=w+'px'; cv.style.height=h+'px'; const ctx=cv.getContext('2d'); ctx.setTransform(dpr,0,0,dpr,0,0); return ctx; }
+    function drawLineChart(cv, pts, {yMin=0,yMax=100,label=''}={}){
+      const w = Math.max(320, Math.floor(cv.clientWidth||cv.parentElement?.clientWidth||340));
+      const h = 200, L=40, B=24, T=14, R=10;
+      const ctx = setCanvasSize(cv, Math.min(720,w), h);
+      const W = cv.width/(window.devicePixelRatio||1), H = cv.height/(window.devicePixelRatio||1);
+      // fondo
+      ctx.fillStyle = '#fff'; ctx.fillRect(0,0,W,H);
+      // ejes
+      ctx.strokeStyle = 'rgba(0,0,0,.45)'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(L,T); ctx.lineTo(L,H-B); ctx.lineTo(W-R,H-B); ctx.stroke();
+      // grilla + etiquetas
+      ctx.fillStyle = '#111'; ctx.font='11px system-ui';
+      const ticks=5; for(let i=0;i<=ticks;i++){ const y=H-B - (H-B-T)*(i/ticks); const v=(yMin+(yMax-yMin)*(i/ticks)).toFixed(0); ctx.strokeStyle='rgba(0,0,0,.06)'; ctx.beginPath(); ctx.moveTo(L,y); ctx.lineTo(W-R,y); ctx.stroke(); ctx.fillText(v,4,y+3);}
+      if(!pts||!pts.length){ ctx.fillText(label, L, T-2); return; }
+      const minX=Math.min(...pts.map(p=>p.x)); const maxX=Math.max(...pts.map(p=>p.x));
+      const X=x=> L + ((x-minX)/(maxX-minX||1))*(W-R-L);
+      const Y=y=> H-B - ((y-yMin)/(yMax-yMin||1))*(H-B-T);
+      ctx.strokeStyle='#000'; ctx.lineWidth=2; ctx.beginPath(); pts.forEach((p,i)=>{ const x=X(p.x), y=Y(p.y); if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y); }); ctx.stroke();
+      ctx.fillStyle='#000'; pts.forEach(p=>{ const x=X(p.x), y=Y(p.y); ctx.beginPath(); ctx.arc(x,y,2.5,0,Math.PI*2); ctx.fill(); });
+      ctx.fillStyle='#000'; ctx.font='12px system-ui'; ctx.fillText(label, L, T-2);
+    }
+
+    function generarPDF(){
+      calcularResultados();
+      // Datos base
+      const nombre=$('#p_nombre')?.value||''; const id=$('#p_id')?.value||''; const edad=num($('#p_edad')?.value); const sexo=$('#p_sexo')?.value||''; const talla=num($('#p_talla')?.value); const peso=num($('#p_peso')?.value); const pista=num($('#p_pista')?.value); const eq=$('#p_eq')?.value||'casas';
+      const out = (eq==='casas')? predCasas({edad,talla_cm:talla,sexo}) : predTroosters({edad,talla_cm:talla,peso_kg:peso,sexo});
+      const laps= +($('#laps')?.value||0); const extra= +($('#extra_m')?.value||0); const metros = (Number.isFinite(laps)&&Number.isFinite(pista))? (laps*(pista||0) + (Number.isFinite(extra)?extra:0)) : NaN;
+
+      const preSp= num($('#sv_spo2_pre')?.value), postSp= num($('#sv_spo2_post')?.value); const spo2=[1,2,3,4,5,6].map(i=> num($('#spo2_'+i)?.value));
+      const preHr= num($('#sv_fc_pre')?.value), postHr= num($('#sv_fc_post')?.value); const fc=[1,2,3,4,5,6].map(i=> num($('#fc_'+i)?.value));
+      const spArr=[preSp,...spo2,postSp].filter(Number.isFinite).map(v=> clamp(v,0,100)); const nadir= spArr.length? Math.min(...spArr): NaN; const delta=(Number.isFinite(preSp)&&Number.isFinite(postSp))? (postSp-preSp): NaN;
+      // DDR/DSP
+      let ddr=NaN;{ const s=[]; if(Number.isFinite(preSp)) s.push([0,100-preSp]); for(let i=0;i<6;i++){ if(Number.isFinite(spo2[i])) s.push([i+1,100-spo2[i]]);} if(Number.isFinite(postSp)) s.push([6,100-postSp]); if(s.length>=2){ let area=0; for(let i=0;i<s.length-1;i++){ const [t1,y1]=s[i],[t2,y2]=s[i+1]; area+=(y1+y2)/2*(t2-t1);} ddr=(Number.isFinite(metros)&&metros>0)? area/metros: NaN; } }
+      const dsp = (Number.isFinite(nadir)&& Number.isFinite(metros) && metros>0)? metros*nadir : NaN;
+      const vel = (Number.isFinite(metros) && metros>0)? (metros/360): NaN; const pct=(out?.pred && Number.isFinite(metros))? (100*metros/out.pred): null; const bmi = (Number.isFinite(talla)&&Number.isFinite(peso))? (peso/((talla/100)**2)): null;
+
+      // Relleno de campos
+      $('#r_datetime').textContent = new Date().toLocaleString('es-CO');
+      $('#r_nombre').textContent = nombre||'—'; $('#r_id').textContent = id||'—'; $('#r_sexo').textContent = (sexo==='M'?'Masculino':'Femenino'); $('#r_edad').textContent = Number.isFinite(edad)? edad: '—';
+      $('#r_talla').textContent = Number.isFinite(talla)? talla.toFixed(1): '—'; $('#r_peso').textContent = Number.isFinite(peso)? peso.toFixed(1): '—'; $('#r_bmi').textContent = Number.isFinite(bmi)? bmi.toFixed(1): '—'; $('#r_pista').textContent = Number.isFinite(pista)? pista.toFixed(1): '—';
+      $('#r_eq').textContent = (eq==='casas'? 'Casas (Bogotá)': 'Troosters (1999)');
+      $('#r_dist').textContent = Number.isFinite(metros)? metros.toFixed(1): '—'; $('#r_pct').textContent = (pct!=null)? pct.toFixed(0)+' %':'—';
+      $('#r_pred').textContent = (out?.pred!=null)? out.pred.toFixed(0): '—'; $('#r_lln').textContent = (out?.lln!=null)? out.lln.toFixed(0): '—';
+      $('#r_vel').textContent = Number.isFinite(vel)? vel.toFixed(2): '—'; $('#r_nadir').textContent = Number.isFinite(nadir)? nadir.toFixed(1): '—'; $('#r_delta').textContent = Number.isFinite(delta)? delta.toFixed(1): '—';
+      $('#r_ddr').textContent = Number.isFinite(ddr)? ddr.toFixed(3): '—'; $('#r_dsp').textContent = Number.isFinite(dsp)? dsp.toFixed(0): '—';
+
+      // Tabla por minuto
+      const tb=$('#r_mins_body'); if(tb){ tb.innerHTML=''; for(let i=1;i<=6;i++){ const tr=document.createElement('tr'); const s = Number.isFinite(spo2[i-1])? spo2[i-1].toFixed(1):'—'; const h = Number.isFinite(fc[i-1])? fc[i-1].toFixed(0):'—'; tr.innerHTML=`<td>${i}</td><td>${s}</td><td>${h}</td>`; tb.appendChild(tr);} }
+      // Pausas
+      const pb=$('#r_pause_body'); if(pb){ pb.innerHTML=''; (pauseLog||[]).forEach((p,i)=>{ const tr=document.createElement('tr'); tr.innerHTML = `<td>${i+1}</td><td>${p.start}</td><td>${p.end}</td><td>${p.dur}</td><td>${p.cause}</td>`; pb.appendChild(tr); }); }
+
+      // Gráficos (sobrios para impresión)
+      const ptsSp = []; if(Number.isFinite(preSp)) ptsSp.push({x:0,y:preSp}); for(let i=0;i<6;i++){ if(Number.isFinite(spo2[i])) ptsSp.push({x:i+1,y:spo2[i]}); } if(Number.isFinite(postSp)) ptsSp.push({x:6,y:postSp});
+      const yMinSp = Math.max(70, Math.min(88, Math.floor(Math.min(...ptsSp.map(p=>p.y).concat([100])))-2)); drawLineChart($('#c_spo2'), ptsSp, {yMin:yMinSp, yMax:100, label:'SpO₂ (%)'});
+      const ptsHr = []; if(Number.isFinite(preHr)) ptsHr.push({x:0,y:preHr}); for(let i=0;i<6;i++){ if(Number.isFinite(fc[i])) ptsHr.push({x:i+1,y:fc[i]}); } if(Number.isFinite(postHr)) ptsHr.push({x:6,y:postHr});
+      const yMinHr = Math.max(40, Math.min(...ptsHr.map(p=>p.y).concat([60]))-5); const yMaxHr = Math.min(220, Math.max(...ptsHr.map(p=>p.y).concat([160]))+10); drawLineChart($('#c_hr'), ptsHr, {yMin:yMinHr, yMax:yMaxHr, label:'Frecuencia cardiaca (lpm)'});
+
+      // Interpretación breve
+      let interp=[];
+      if(out && out.pred && Number.isFinite(metros)){ const lln=out.lln; if(Number.isFinite(lln)) interp.push(metros < lln ? `Distancia por debajo del LLN (${lln.toFixed(0)} m).` : `Distancia dentro de lo esperado (≥ LLN ${lln.toFixed(0)} m).`); else interp.push(`Distancia≈ ${(100*metros/out.pred).toFixed(0)}% del predicho.`); }
+      if(Number.isFinite(delta)) interp.push(Math.abs(delta)>=4 ? `Desaturación de ${delta.toFixed(1)}% (≥4% relevante).` : `Desaturación de ${delta.toFixed(1)}% (<4%).`);
+      if(Number.isFinite(preHr) && Number.isFinite(postHr)){ const d=postHr-preHr; interp.push(`FC ${preHr.toFixed(0)}→${postHr.toFixed(0)} lpm (Δ ${d.toFixed(0)}).`);}
+      if(Number.isFinite(dsp)) interp.push(`DSP ${dsp.toFixed(0)} m·% y DDR ${Number.isFinite(ddr)?ddr.toFixed(3):'—'} %·min/m.`);
+      const borgPre=num($('#borg_pre')?.value), borgPost=num($('#borg_post')?.value); if(Number.isFinite(borgPre)||Number.isFinite(borgPost)) interp.push(`Borg ${Number.isFinite(borgPre)?borgPre:'—'} → ${Number.isFinite(borgPost)?borgPost:'—'}.`);
+      $('#r_interpretacion').textContent = interp.join(' ');
+
+      window.print();
+    }
+
+    // Enlaces
+    document.getElementById('btn_pdf')?.addEventListener('click', generarPDF);
+    window.addEventListener('DOMContentLoaded', ()=>{ try{ actualizarPredicciones(); }catch(e){} });
+  </script>
+</body>
+</html>

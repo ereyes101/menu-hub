@@ -1,0 +1,19 @@
+
+---
+
+## 3️⃣ `.gitignore`  
+Evita subir archivos temporales o innecesarios al repositorio.  
+Guárdalo como **`.gitignore`** en la raíz.
+
+```gitignore
+# Archivos temporales de sistema
+.DS_Store
+Thumbs.db
+
+# Archivos temporales de editores
+*.log
+*.tmp
+*.swp
+
+# Carpeta de backups
+backup/

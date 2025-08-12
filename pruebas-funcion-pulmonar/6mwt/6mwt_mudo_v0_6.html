@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>6MWT Estándar (ATS–ERS) — v0.5.1 (operador, 3 pantallas + PDF)</title>
+  <meta name="description" content="6MWT estandarizada y compacta en 3 pantallas: 1) Datos+Checklist+PRE, 2) Prueba 6:00, 3) POST+Análisis+Conclusiones. Sin voz; panel de comandos; PDF carta con gráficas e interpretación. Predichos (Casas–Bogotá/Troosters), %FCmáx (Tanaka/Gulati/Fox), reserva, alerta SpO₂ (umbral/Δ>4%)." />
+  <style>
+    /* —— Base compacta —— */
+    html,body{margin:0;padding:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif;background:#fff;color:#111}
+    .container{max-width:980px;margin:0 auto;padding:8px}
+    header{display:flex;gap:6px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+    .title{font-weight:700;font-size:18px}
+    .subtitle{color:#444;font-size:12px}
+    .card{border:1px solid #ddd;border-radius:8px;padding:8px;background:#fff}
+    .grid{display:grid;gap:6px}
+    .grid.cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .grid.cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .grid.cols-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+    @media(max-width:980px){.grid.cols-2,.grid.cols-3,.grid.cols-4{grid-template-columns:1fr}}
+    h2,h3{margin:0 0 6px}
+    label{font-size:12px;display:block;margin-bottom:2px}
+    input,select,textarea{padding:6px;border-radius:6px;border:1px solid #ccc;background:#fff;color:#111}
+    input,select,textarea{width:auto;max-width:100%}
+    .row{display:flex;gap:4px;align-items:center;flex-wrap:wrap}
+    .btn{padding:6px 8px;border-radius:8px;border:1px solid #ccc;background:#f7f7f7;cursor:pointer;font-size:12px}
+    .btn:disabled{opacity:.6;cursor:not-allowed}
+    .btn.primary{background:#1e3a8a;color:#fff;border-color:#1e3a8a}
+    .btn.success{background:#16a34a;color:#fff;border-color:#16a34a}
+    .btn.warn{background:#f59e0b;color:#111;border-color:#f59e0b}
+    .btn.danger{background:#dc2626;color:#fff;border-color:#dc2626}
+    .btn.ghost{background:#fff}
+    .stepper{display:flex;gap:4px;overflow:auto;padding-bottom:4px}
+    .chip{padding:4px 6px;border-radius:999px;border:1px solid #ddd;font-size:11px;white-space:nowrap}
+    .chip.active{border-color:#1e3a8a}
+    .hidden{display:none!important}
+    .timer{font-size:56px;text-align:center;font-weight:800;margin:4px 0 2px}
+    .opCmd{font-size:14px;border:1px dashed #bbb;border-radius:8px;padding:6px;background:#fcfcfc}
+    table{width:100%;border-collapse:collapse}
+    th,td{border:1px solid #ddd;padding:4px;text-align:center;font-size:12px}
+    tr.highlight td{background:#eff6ff}
+    .stat{display:flex;flex-direction:column;border:1px solid #eee;border-radius:6px;padding:6px;background:#fff}
+    .blink{animation:bl 1s step-start 0s infinite}@keyframes bl{50%{opacity:.25}}
+
+    /* —— Compactar campos por ID (anchos en ch) —— */
+    #idPaciente{width:14ch}
+    #documento{width:14ch}
+    #nombres{width:18ch}
+    #apellidos{width:18ch}
+    #ciudad{width:16ch}
+    #eps{width:16ch}
+    #genero{width:12ch}
+    #fnac{width:16ch}
+    #edad{width:4ch}
+    #sexoBio{width:10ch}
+
+    #talla{width:5ch}
+    #peso{width:6ch}
+    #imc{width:6ch}
+    #longPasillo{width:6ch}
+    #altitud{width:7ch}
+
+    #preFC,#prePS,#prePD,#preSpO2{width:6ch}
+    #preBorgD,#preBorgF{width:4ch}
+
+    #spo2Preset{width:18ch}
+    #spo2Custom{width:6ch}
+
+    #laps{width:6ch}
+    #partialMeters{width:6ch}
+
+    #duringBody input[type="number"]{width:6ch}
+    #duringBody td:last-child input[type="text"]{width:18ch}
+
+    #postWrap input[type="number"]{width:6ch}
+
+    /* Quitar spinners de number */
+    input[type=number]::-webkit-outer-spin-button,
+    input[type=number]::-webkit-inner-spin-button{ -webkit-appearance: none; margin: 0; }
+    input[type=number]{ -moz-appearance: textfield; }
+
+    /* Banner de alerta suave */
+    .banner{position:sticky;top:0;z-index:40;display:none;padding:6px 8px;border-left:6px solid #dc2626;background:#fef2f2;color:#7f1d1d}
+    .banner.show{display:block}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <div class="title">6MWT Estándar (ATS–ERS)</div>
+        <div class="subtitle">v0.5.1 • 3 pantallas • Sin voz • Panel de comandos del operador • Casas/Troosters • %FCmáx/Reserva • Alertas SpO₂ • PDF</div>
+      </div>
+    </header>
+
+    <div class="stepper" id="stepper"></div>
+    <div id="topBanner" class="banner"></div>
+
+    <!-- STEP 1: Datos + Checklist + PRE (condensado) -->
+    <section class="card" data-step="1">
+      <h2>1) Datos del paciente, verificación previa y PRE</h2>
+      <div class="grid cols-2">
+        <div>
+          <h3>Identificación</h3>
+          <div class="grid cols-2">
+            <div><label>ID paciente <input id="idPaciente" required placeholder="PAC123"/></label></div>
+            <div><label>Documento <input id="documento" placeholder="CC/NIT"/></label></div>
+            <div><label>Nombres <input id="nombres"/></label></div>
+            <div><label>Apellidos <input id="apellidos"/></label></div>
+          </div>
+          <div class="grid cols-3">
+            <div><label>Fecha nacimiento <input id="fnac" type="date"/></label></div>
+            <div><label>Edad <input id="edad" type="number" min="1" max="120"/></label></div>
+            <div><label>Sexo biológico <select id="sexoBio"><option value="M">M</option><option value="F">F</option><option value="Otro">Otro</option></select></label></div>
+          </div>
+          <div class="grid cols-3">
+            <div><label>Género <input id="genero" placeholder="opcional"/></label></div>
+            <div><label>Ciudad <input id="ciudad" placeholder="Girardot"/></label></div>
+            <div><label>EPS <input id="eps" placeholder="opcional"/></label></div>
+          </div>
+
+          <h3 style="margin-top:6px">Parámetros del sitio</h3>
+          <div class="grid cols-3">
+            <div><label>Pasillo (m) * <input id="longPasillo" type="number" min="10" max="100" step="1" required placeholder="30"/></label></div>
+            <div><label>Altitud (m) <input id="altitud" type="number" min="-100" max="6000" placeholder="2640"/></label></div>
+            <div>
+              <label>Umbral SpO₂</label>
+              <div class="row">
+                <select id="spo2Preset">
+                  <option value="86">86% (Colombia)</option>
+                  <option value="80">80% (internacional)</option>
+                  <option value="custom">Personalizado…</option>
+                </select>
+                <input id="spo2Custom" type="number" min="50" max="95" step="1" value="86" class="hidden"/>
+              </div>
+            </div>
+          </div>
+
+          <h3 style="margin-top:6px">Predicción</h3>
+          <div class="row">
+            <label>Ecuación
+              <select id="eqRef">
+                <option value="casas_bogota">Casas–Bogotá</option>
+                <option value="troosters_1999">Troosters 1999</option>
+              </select>
+            </label>
+            <label>FCmáx
+              <select id="hrFormula">
+                <option value="tanaka">Tanaka</option>
+                <option value="gulati">Gulati (♀)</option>
+                <option value="fox">Fox</option>
+              </select>
+            </label>
+          </div>
+        </div>
+        <div>
+          <h3>Checklist de seguridad (requerido)</h3>
+          <div class="grid cols-2">
+            <div class="stat"><label><input type="checkbox" id="ckConsent"/> Consentimiento / explicación</label></div>
+            <div class="stat"><label><input type="checkbox" id="ckRest"/> Reposo previo ≥ 15 min</label></div>
+            <div class="stat"><label><input type="checkbox" id="ckEquip"/> Equipo listo (oxímetro, tensiómetro, silla, O₂, DEA, teléfono)</label></div>
+            <div class="stat"><label><input type="checkbox" id="ckRCP"/> Operador con RCP básico</label></div>
+            <div class="stat"><label><input type="checkbox" id="ckLayout"/> Corredor bajo techo, plano, 30 m ideal</label></div>
+          </div>
+
+          <h3 style="margin-top:6px">Ayudas y condiciones</h3>
+          <div class="grid cols-2">
+            <div>
+              <label>Ayuda de marcha</label>
+              <select id="walkAid">
+                <option value="ninguna">Ninguna</option>
+                <option value="baston">Bastón</option>
+                <option value="caminador">Caminador/Andador</option>
+                <option value="otros">Otros</option>
+              </select>
+            </div>
+            <div>
+              <label><input id="o2Used" type="checkbox"/> O₂ suplementario</label>
+              <div class="row" id="o2Box" class="hidden">
+                <label>Modo <select id="o2Mode"><option value="canula">Cánula</option><option value="mascarilla">Mascarilla</option></select></label>
+                <label>Flujo <input id="o2Flow" type="number" min="0" max="15" step="0.5" placeholder="2"/> L/min</label>
+              </div>
+            </div>
+          </div>
+
+          <h3 style="margin-top:6px">Signos PRE</h3>
+          <div class="grid cols-3">
+            <div><label>FC (lpm) <input id="preFC" type="number" min="20" max="240"/></label></div>
+            <div><label>PA sist (mmHg) <input id="prePS" type="number" min="60" max="250"/></label></div>
+            <div><label>PA diast (mmHg) <input id="prePD" type="number" min="30" max="150"/></label></div>
+            <div><label>SpO₂ (%) <input id="preSpO2" type="number" min="50" max="100"/></label></div>
+            <div><label>Borg disnea <input id="preBorgD" type="number" min="0" max="10" step="1"/></label></div>
+            <div><label>Borg fatiga <input id="preBorgF" type="number" min="0" max="10" step="1"/></label></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row" style="margin-top:8px; justify-content:space-between;">
+        <div class="subtitle">
+          Campos obligatorios: ID paciente y Pasillo. Las alertas de SpO₂ sólo se muestran con valores completos.
+          <div id="reqStatus" class="subtitle" style="margin-top:4px;color:#7f1d1d"></div>
+        </div>
+        <button class="btn primary" id="to2" disabled>Ir a la prueba ➜</button>
+      </div>
+    </section>
+
+    <!-- STEP 2: Prueba (6 minutos) -->
+    <section class="card hidden" data-step="2">
+      <h2>2) Prueba de 6 minutos</h2>
+      <div class="opCmd" id="opCmdActual">Operador — diga al paciente: <b>“Usted realizará una caminata durante 6 minutos. Camine tan rápido como le sea posible. Puede disminuir la velocidad, parar o descansar si lo necesita.”</b></div>
+      <div class="row" style="justify-content:center; gap:8px; margin: 6px 0 8px; flex-wrap: wrap;">
+        <button class="btn success" id="btnStart">▶️ Iniciar</button>
+        <button class="btn warn" id="btnPause" disabled>⏸️ Pausa</button>
+        <button class="btn success" id="btnResume" disabled>⏯️ Reanudar</button>
+        <button class="btn" id="btnLap" disabled>🔁 Vuelta</button>
+        <button class="btn" id="btnEvent" disabled>📝 Evento</button>
+        <button class="btn" id="btnCriteria">📋 Criterios</button>
+        <button class="btn danger" id="btnEnd" disabled>⏹️ Terminar</button>
+      </div>
+
+      <div class="timer" id="display">06:00</div>
+
+      <div class="grid cols-3">
+        <div class="stat">
+          <div class="subtitle">Vueltas</div>
+          <div style="display:flex; gap:6px; align-items:center; margin-top:4px">
+            <button class="btn" id="decLap" disabled>−</button>
+            <input id="laps" type="number" value="0" min="0" step="1" style="text-align:center"/>
+            <button class="btn" id="incLap" disabled>＋</button>
+          </div>
+        </div>
+        <div class="stat">
+          <label>Metros parciales (0–pasillo)
+            <input id="partialMeters" type="number" value="0" min="0" step="1" />
+          </label>
+          <div class="subtitle">Se suma a (vueltas × pasillo).</div>
+          <div class="subtitle">Pasillo: <span id="pasilloEcho">–</span> · Distancia parcial: <span id="distanceEcho">0 m</span></div>
+        </div>
+        <div class="stat">
+          <h3>Ayudas durante</h3>
+          <div class="row"><label>O₂ actual <input id="o2FlowLive" type="number" min="0" max="15" step="0.5"/> L/min</label><button class="btn" id="btnLogO2" disabled>Registrar cambio</button></div>
+          <div class="row"><label>Ayuda marcha <select id="walkAidLive"><option value="">(sin cambio)</option><option value="baston">Bastón</option><option value="caminador">Caminador</option><option value="otros">Otros</option></select></label><button class="btn" id="btnLogAid" disabled>Registrar cambio</button></div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:8px;">
+        <div class="row" style="justify-content:space-between; align-items:center;">
+          <h3>Registro por minuto (opcional)</h3>
+          <div class="subtitle">Umbral SpO₂: <span id="spo2Echo">86</span>%</div>
+        </div>
+        <div style="overflow:auto; max-height: 220px;">
+          <table>
+            <thead><tr><th>Min</th><th>FC</th><th>SpO₂</th><th>Borg D</th><th>Borg F</th><th>Eventos</th></tr></thead>
+            <tbody id="duringBody"></tbody>
+          </table>
+        </div>
+        <div class="subtitle" style="margin-top:4px">Atajos: I iniciar • Espacio pausa/reanuda • L vuelta • E evento • S terminar.</div>
+      </div>
+
+      <div class="card" style="margin-top:8px;">
+        <h3>Guía estandarizada para el operador</h3>
+        <ol id="opCmdLista" class="subtitle" style="margin-left:16px;line-height:1.5"></ol>
+      </div>
+
+      <div class="row" style="margin-top:8px; justify-content:space-between;">
+        <button class="btn ghost" id="back1">⬅️ Atrás</button>
+        <button class="btn primary" id="to3" disabled>Ir a POST/Análisis ➜</button>
+      </div>
+    </section>
+
+    <!-- STEP 3: POST + Análisis + Conclusiones -->
+    <section class="card hidden" data-step="3">
+      <h2>3) Signos POST, análisis y conclusiones</h2>
+      <div id="postWrap" class="grid cols-2"></div>
+
+      <div class="grid cols-4" style="margin-top:6px">
+        <div class="stat"><div class="subtitle">Distancia total (m)</div><div id="sumDist" style="font-size:20px; font-weight:800">–</div></div>
+        <div class="stat"><div class="subtitle">Predicho (m)</div><div id="sumPred" style="font-size:20px; font-weight:800">–</div></div>
+        <div class="stat"><div class="subtitle">% del predicho</div><div id="sumPct" style="font-size:20px; font-weight:800">–</div></div>
+        <div class="stat"><div class="subtitle">LLN / z-score</div><div id="sumLLN" style="font-size:20px; font-weight:800">–</div></div>
+      </div>
+
+      <div class="grid cols-4" style="margin-top:6px">
+        <div class="stat"><div class="subtitle">FC pico (lpm)</div><div id="sumHRpeak" style="font-size:20px; font-weight:800">–</div></div>
+        <div class="stat"><div class="subtitle">% FCmáx (pred)</div><div id="sumPctHRmax" style="font-size:20px; font-weight:800">–</div></div>
+        <div class="stat"><div class="subtitle">SpO₂ mínima (%)</div><div id="sumSpO2min" style="font-size:20px; font-weight:800">–</div></div>
+        <div class="stat"><div class="subtitle">Δ SpO₂ (base→mín)</div><div id="sumSpO2delta" style="font-size:20px; font-weight:800">–</div></div>
+      </div>
+
+      <div class="card" style="margin-top:6px">
+        <h3>Análisis (auto)</h3>
+        <div id="analysisText" class="subtitle"></div>
+      </div>
+
+      <div class="grid cols-2" style="margin-top:6px">
+        <div class="card"><h3>FC vs tiempo</h3><canvas id="chartHR" height="200" style="width:100%"></canvas></div>
+        <div class="card"><h3>SpO₂ vs tiempo</h3><canvas id="chartSpO2" height="200" style="width:100%"></canvas></div>
+      </div>
+
+      <div class="card" style="margin-top:6px">
+        <h3>Conclusiones / observaciones</h3>
+        <textarea id="conclusiones" rows="3" style="width:100%" placeholder="Ej.: 6MWD reducida; esfuerzo submáximo; desaturación significativa; realizada con caminador y O₂ 2 L/min."></textarea>
+      </div>
+
+      <div class="row" style="margin-top:8px; justify-content:flex-start; gap:8px;">
+        <button class="btn ghost" id="back2">⬅️ Atrás</button>
+        <button class="btn primary" id="btnPrint">🖨️ Imprimir PDF</button>
+      </div>
+    </section>
+  </div>
+
+  <script type="module">
+    // =============================
+    //  6MWT App v0.5.1 — 3 pantallas, sin TTS/STT + PDF carta
+    // =============================
+
+    const qs = s => document.querySelector(s);
+    const qsa = s => Array.from(document.querySelectorAll(s));
+
+    const state = {
+      config: { spo2Threshold: 86, eqRef:'casas_bogota', hrFormula:'tanaka', postSchedule:'2_5', postA:2, postB:5 },
+      patient: { id:'', nombres:'', apellidos:'', documento:'', edad:null, sexoBiologico:'M', genero:'', ciudad:'', eps:'', fnac:'' },
+      anthropo: { talla:null, peso:null, imc:null, altitud:null },
+      context: { longPasillo:null, horaInicioISO:null },
+      pre: { FC:null, PS:null, PD:null, SpO2:null, BorgD:null, BorgF:null },
+      during: [1,2,3,4,5,6].map(m=>({minuto:m, FC:null, SpO2:null, BorgD:null, BorgF:null, eventos:[]})),
+      post: { A:{min:2,FC:null,PS:null,PD:null,SpO2:null,BorgD:null,BorgF:null}, B:{min:5,FC:null,PS:null,PD:null,SpO2:null,BorgD:null,BorgF:null} },
+      aids: { walkAid:'ninguna', o2Used:false, o2Mode:'canula', o2Flow:null, o2Changes:[], walkAidChanges:[] },
+      laps:0, partialMeters:0, distanceTotal:0,
+      timer:{running:false,startEpoch:0,elapsedMs:0,interval:null,lastAnnouncedMin:0,lastBeepMin:0,finished:false},
+      events:[], flags:{ spUnderWarned:false, dropWarned:false }
+    };
+
+    const clamp=(n,a,b)=>Math.min(Math.max(n,a),b);
+    const pad2=n=>String(n).padStart(2,'0');
+    const numOrNull=v=>{const n=Number(v);return Number.isFinite(n)?n:null};
+    const round=(n,d=0)=>{const k=Math.pow(10,d);return Math.round((n+Number.EPSILON)*k)/k};
+
+    function banner(msg){const el=qs('#topBanner'); el.textContent=msg; el.classList.add('show'); setTimeout(()=>el.classList.remove('show'), 3200);}    
+    function beep(dur=160,freq=880){ try{ const ctx=new (window.AudioContext||window.webkitAudioContext)(); const o=ctx.createOscillator(); const g=ctx.createGain(); o.type='sine'; o.frequency.value=freq; o.connect(g); g.connect(ctx.destination); g.gain.setValueAtTime(0.001,ctx.currentTime); g.gain.exponentialRampToValueAtTime(0.18,ctx.currentTime+0.01); o.start(); setTimeout(()=>{ g.gain.exponentialRampToValueAtTime(0.00001,ctx.currentTime+0.14); o.stop(); ctx.close(); }, dur);}catch(e){} }
+
+    function mmss(ms){ const total=Math.max(0,360000-ms); const s=Math.floor(total/1000); return `${pad2(Math.floor(s/60))}:${pad2(s%60)}`; }
+    function currentMin(){ const s=Math.floor(state.timer.elapsedMs/1000); return clamp(Math.floor(s/60)+1,1,6); }
+
+    function updateDistance(){ const L=Number(state.context.longPasillo||0), v=Number(state.laps||0), p=Number(state.partialMeters||0); const d=(L*v)+p; state.distanceTotal=d; qs('#distanceEcho').textContent=`${d} m`; }
+
+    // ===== Predichos =====
+    function predCasas({talla_cm,edad,sexo}){ const sex=(sexo==='M')?1:0; const pred=453.621+(1.445*talla_cm)-(1.531*edad)+(48.559*sex); const DE=46.8739; const LLN=pred-(1.645*DE); return {pred,DE,LLN}; }
+    function predTroosters({talla_cm,edad,peso,sexo}){ const base=218+(5.14*talla_cm)-(5.32*edad)-(1.8*peso); const plus=(sexo==='M')?51.3:0; return {pred:base+plus,DE:null,LLN:null}; }
+    function calcPred(){ const talla=Number(state.anthropo.talla||0), edad=Number(state.patient.edad||0), peso=Number(state.anthropo.peso||0), sexo=state.patient.sexoBiologico||'M'; return (state.config.eqRef==='casas_bogota')? predCasas({talla_cm:talla,edad,sexo}) : predTroosters({talla_cm:talla,edad,peso,sexo}); }
+
+    // ===== FCmáx =====
+    function hrPred(age,formula,sex){ if(age==null||!isFinite(age)) return null; switch(formula){ case 'gulati': return (sex==='F')? (206-0.88*age):(208-0.7*age); case 'fox': return 220-age; default: return 208-0.7*age; } }
+
+    function computeAux(){
+      const age=Number(state.patient.edad)||null, sex=state.patient.sexoBiologico||'M'; const hrP=hrPred(age,state.config.hrFormula,sex);
+      const fc=[]; const add=v=>{const n=numOrNull(v); if(n!=null) fc.push(n)}; add(state.pre.FC); for(const d of state.during) add(d.FC); add(state.post.A.FC); add(state.post.B.FC);
+      const hrPeak=fc.length?Math.max(...fc):null; const hrRest=numOrNull(state.pre.FC);
+      const pctHRmax=(hrP&&hrPeak)?(100*hrPeak/hrP):null; const reservePct=(hrP&&hrRest!=null&&hrPeak!=null&&(hrP-hrRest)>0)?(100*(hrPeak-hrRest)/(hrP-hrRest)):null;
+      const sp=[]; const addS=v=>{const n=numOrNull(v); if(n!=null) sp.push(n)}; addS(state.pre.SpO2); for(const d of state.during) addS(d.SpO2); addS(state.post.A.SpO2); addS(state.post.B.SpO2);
+      const spMin=sp.length?Math.min(...sp):null; const spBase=numOrNull(state.pre.SpO2); const spDelta=(spBase!=null&&spMin!=null)?(spBase-spMin):null; const desatSig=(spDelta!=null&&spDelta>4)||(spMin!=null&&spMin<88);
+      return {hrP,hrPeak,hrRest,pctHRmax,reservePct,spMin,spDelta,desatSig};
+    }
+
+    function collectSeries(kind){ const xs=[],ys=[],labels=[]; const push=(label,x,y)=>{xs.push(x);ys.push(numOrNull(y));labels.push(label)}; push('PRE',0,kind==='FC'?state.pre.FC:state.pre.SpO2); for(const d of state.during) push(String(d.minuto),d.minuto,kind==='FC'?d.FC:d.SpO2); push('P'+state.post.A.min,state.post.A.min,kind==='FC'?state.post.A.FC:state.post.A.SpO2); push('P'+state.post.B.min,state.post.B.min,kind==='FC'?state.post.B.FC:state.post.B.SpO2); return {xs,ys,labels}; }
+    function drawLine(sel,series,axes){ const {xs,ys,labels}=series; const c=qs(sel); if(!c) return; const ctx=c.getContext('2d'); const dpr=window.devicePixelRatio||1; const W=c.clientWidth||600,H=c.height; c.width=W*dpr;c.height=H*dpr; ctx.setTransform(dpr,0,0,dpr,0,0); ctx.clearRect(0,0,W,H); const ml=32,mr=8,mt=8,mb=22; ctx.strokeStyle='#ccc';ctx.fillStyle='#111';ctx.lineWidth=1; ctx.beginPath();ctx.moveTo(ml,mt);ctx.lineTo(ml,H-mb);ctx.lineTo(W-mr,H-mb);ctx.stroke(); for(let y=axes.yMin;y<=axes.yMax;y+= (axes.yLabel==='%'?5:20)){ const yy=mapY(y,axes.yMin,axes.yMax,H,mt,mb); ctx.fillStyle='#666';ctx.font='11px system-ui';ctx.fillText(String(y),4,yy+4); ctx.strokeStyle='#eee';ctx.beginPath();ctx.moveTo(ml,yy);ctx.lineTo(W-mr,yy);ctx.stroke(); } const n=xs.length; for(let i=0;i<n;i++){ const xx=mapX(i,n,W,ml,mr); ctx.fillStyle='#666';ctx.fillText(labels[i]||'',xx-8,H-mb+12);} ctx.strokeStyle='#1e3a8a';ctx.lineWidth=2; ctx.beginPath(); let first=true; for(let i=0;i<ys.length;i++){ const y=ys[i]; if(y==null||!isFinite(y)) continue; const xx=mapX(i,ys.length,W,ml,mr); const yy=mapY(y,axes.yMin,axes.yMax,H,mt,mb); if(first){ctx.moveTo(xx,yy);first=false}else{ctx.lineTo(xx,yy)} } ctx.stroke(); ctx.fillStyle='#1e3a8a'; for(let i=0;i<ys.length;i++){ const y=ys[i]; if(y==null||!isFinite(y)) continue; const xx=mapX(i,ys.length,W,ml,mr); const yy=mapY(y,axes.yMin,axes.yMax,H,mt,mb); ctx.beginPath();ctx.arc(xx,yy,3,0,Math.PI*2);ctx.fill(); } ctx.fillStyle='#111'; ctx.fillText(axes.yLabel,W-mr-20,mt+12); }
+    const mapX=(i,n,W,ml,mr)=>{const plotW=W-ml-mr; return ml+(plotW*(i/(n-1||1)));}; const mapY=(v,vmin,vmax,H,mt,mb)=>{const plotH=H-mt-mb; const t=(v-vmin)/(vmax-vmin||1); return (H-mb)-(plotH*t)};
+
+    // ===== Timer & Operador =====
+    function startTimer(){ if(state.timer.running) return; state.timer.running=true; state.timer.finished=false; state.timer.startEpoch=Date.now()-state.timer.elapsedMs; state.context.horaInicioISO=new Date().toISOString(); uiDuring(true); tick(); state.timer.interval=setInterval(tick,200); setOpCmd('inicio'); }
+    function pauseTimer(){ if(!state.timer.running) return; state.timer.running=false; clearInterval(state.timer.interval); state.timer.interval=null; }
+    function resumeTimer(){ if(state.timer.running) return; startTimer(); }
+    function endTimer(){ clearInterval(state.timer.interval); state.timer.interval=null; state.timer.running=false; state.timer.finished=true; qs('#to3').disabled=false; setOpCmd('fin'); }
+    function tick(){ state.timer.elapsedMs=Date.now()-state.timer.startEpoch; qs('#display').textContent=mmss(state.timer.elapsedMs); const elapsedSec=Math.floor(state.timer.elapsedMs/1000); const minElapsed=Math.floor(elapsedSec/60); if(minElapsed>=1 && minElapsed<=5 && minElapsed>state.timer.lastAnnouncedMin){ state.timer.lastAnnouncedMin=minElapsed; beep(160,1000); setOpCmd(`min${minElapsed}`); highlightRow(minElapsed); } if(elapsedSec%60===0 && minElapsed!==state.timer.lastBeepMin && minElapsed>0 && minElapsed<=5){ state.timer.lastBeepMin=minElapsed; beep(160,1000); } if(state.timer.elapsedMs>=360000){ endTimer(); qs('#display').classList.add('blink'); } }
+    function highlightRow(min){ qsa('#duringBody tr').forEach(tr=>tr.classList.toggle('highlight', Number(tr.dataset.min)===min)); }
+    function uiDuring(on){ ['#btnPause','#btnEvent','#btnEnd','#btnLap','#incLap','#decLap','#laps','#partialMeters','#btnLogO2','#btnLogAid'].forEach(sel=> qs(sel).disabled=!on); qs('#btnStart').disabled=on; qs('#btnResume').disabled=on; }
+
+    // Panel de comandos del operador
+    function getPhrases(){
+      return {
+        inicio:'Usted realizará una caminata de 6 minutos. Camine tan rápido como le sea posible. Puede disminuir la velocidad, parar o descansar si lo necesita. No hablaré más que estas frases estandarizadas.',
+        min1:'Lo está haciendo bien, le quedan 5 minutos.',
+        min2:'Está haciendo un muy buen trabajo, le quedan 4 minutos.',
+        min3:'Lo está haciendo bien, ya hizo la mitad.',
+        min4:'Mantenga el esfuerzo, faltan 2 minutos.',
+        min5:'Muy buen trabajo, solo queda 1 minuto.',
+        fin:'¡Alto! La prueba ha terminado. Permanezca de pie si puede; siéntese si lo necesita. Tomaremos signos ahora.'
+      };
+    }
+    function setOpCmd(key){ const ph=getPhrases(); const t=ph[key]||''; qs('#opCmdActual').innerHTML=`Operador — diga al paciente: <b>“${t}”</b>`; }
+    function renderOpList(){ const ph=getPhrases(); const order=['inicio','min1','min2','min3','min4','min5','fin']; qs('#opCmdLista').innerHTML=order.map(k=>`<li>“${ph[k]}”</li>`).join(''); }
+
+    // ===== STT: eliminado (no se pide micrófono) =====
+
+    // ===== Bindings =====
+    function buildStepper(){ const names=['Datos+Checklist+PRE','Prueba','POST+Análisis']; const el=qs('#stepper'); el.innerHTML=names.map((n,i)=>`<span class="chip" data-chip="${i+1}">${i+1}. ${n}</span>`).join(''); markStep(1);} function markStep(n){ qsa('.chip').forEach(ch=>ch.classList.toggle('active', Number(ch.dataset.chip)===n)); } function gotoStep(n){ qsa('[data-step]').forEach(s=>s.classList.toggle('hidden', Number(s.dataset.step)!==n)); markStep(n); window.scrollTo({top:0,behavior:'smooth'}); }
+
+    function buildDuring(){ const body=qs('#duringBody'); body.innerHTML=''; for(let m=1;m<=6;m++){ const tr=document.createElement('tr'); tr.dataset.min=m; tr.innerHTML=`<td>${m}</td>
+      <td><input type="number" min="20" max="240" data-bind="during-${m}-fc"></td>
+      <td><input type="number" min="50" max="100" data-bind="during-${m}-spo2"></td>
+      <td><input type="number" min="0" max="10" step="1" data-bind="during-${m}-bd"></td>
+      <td><input type="number" min="0" max="10" step="1" data-bind="during-${m}-bf"></td>
+      <td><input type="text" placeholder="evento" data-bind="during-${m}-ev"></td>`; body.appendChild(tr);} }
+
+    function buildPost(){ const w=qs('#postWrap'); w.innerHTML=''; const a=state.config.postSchedule==='1_3'?1:2; const b=state.config.postSchedule==='1_3'?3:5; state.post.A.min=a; state.post.B.min=b; w.appendChild(postCard('A',a)); w.appendChild(postCard('B',b)); }
+    function postCard(key,min){ const d=document.createElement('div'); d.className='card'; d.innerHTML=`<h3>Minuto ${min}</h3>
+      <div class="grid cols-3">
+        <div><label>FC <input type="number" min="20" max="240" data-bind="post-${key}-fc"></label></div>
+        <div><label>PA sist <input type="number" min="60" max="250" data-bind="post-${key}-ps"></label></div>
+        <div><label>PA diast <input type="number" min="30" max="150" data-bind="post-${key}-pd"></label></div>
+        <div><label>SpO₂ <input type="number" min="50" max="100" data-bind="post-${key}-spo2"></label></div>
+        <div><label>Borg D <input type="number" min="0" max="10" step="1" data-bind="post-${key}-bd"></label></div>
+        <div><label>Borg F <input type="number" min="0" max="10" step="1" data-bind="post-${key}-bf"></label></div>
+      </div>`; return d; }
+
+    function bind(){
+      // Checklist habilita continuar
+      ['#ckConsent','#ckRest','#ckEquip','#ckRCP','#ckLayout'].forEach(sel=>{ qs(sel).addEventListener('change',()=>{ checkStep1Ready(); }); });
+
+      // Navegación
+      qs('#to2').onclick=()=>{ if(validateStep1()) gotoStep(2); };
+      qs('#back1').onclick=()=>gotoStep(1);
+      qs('#to3').onclick=()=>{ computeSummary(); gotoStep(3); };
+      qs('#back2').onclick=()=>gotoStep(2);
+      qs('#btnPrint').onclick=()=>{ computeSummary(); printReport(); };
+
+      // Datos básicos
+      qs('#idPaciente').addEventListener('input',e=>{ state.patient.id=e.target.value.trim(); checkStep1Ready(); });
+      qs('#documento').addEventListener('input',e=>state.patient.documento=e.target.value.trim());
+      qs('#nombres').addEventListener('input',e=>state.patient.nombres=e.target.value.trim());
+      qs('#apellidos').addEventListener('input',e=>state.patient.apellidos=e.target.value.trim());
+      qs('#fnac').addEventListener('change',e=>{ state.patient.fnac=e.target.value; if(e.target.value){ const a=age(e.target.value); qs('#edad').value=a; state.patient.edad=a; } });
+      qs('#edad').addEventListener('input',e=>{ state.patient.edad=Number(e.target.value||0); });
+      qs('#sexoBio').addEventListener('change',e=>state.patient.sexoBiologico=e.target.value);
+      qs('#genero').addEventListener('input',e=>state.patient.genero=e.target.value);
+      qs('#ciudad').addEventListener('input',e=>state.patient.ciudad=e.target.value);
+      qs('#eps').addEventListener('input',e=>state.patient.eps=e.target.value);
+
+      // Antropometría y sitio
+      // (talla/peso/IMC se ocultaron del formulario compacto; pueden añadirse aquí si los usa en predicción)
+      qs('#altitud').addEventListener('input',e=>state.anthropo.altitud=Number(e.target.value||0));
+      qs('#longPasillo').addEventListener('input',e=>{ state.context.longPasillo=Number(e.target.value||0); qs('#pasilloEcho').textContent=`${state.context.longPasillo||0} m`; updateDistance(); checkStep1Ready(); });
+
+      // Predicción y HR
+      qs('#eqRef').addEventListener('change',e=>state.config.eqRef=e.target.value);
+      qs('#hrFormula').addEventListener('change',e=>state.config.hrFormula=e.target.value);
+
+      // SpO2 threshold
+      qs('#spo2Preset').addEventListener('change',e=>{ if(e.target.value==='custom'){ qs('#spo2Custom').classList.remove('hidden'); } else { qs('#spo2Custom').classList.add('hidden'); state.config.spo2Threshold=Number(e.target.value); qs('#spo2Echo').textContent=state.config.spo2Threshold; }});
+      qs('#spo2Custom').addEventListener('input',e=>{ state.config.spo2Threshold=Number(e.target.value||86); qs('#spo2Echo').textContent=state.config.spo2Threshold; });
+
+      // PRE
+      qs('#preFC').addEventListener('input',e=>state.pre.FC=Number(e.target.value||0));
+      qs('#prePS').addEventListener('input',e=>state.pre.PS=Number(e.target.value||0));
+      qs('#prePD').addEventListener('input',e=>state.pre.PD=Number(e.target.value||0));
+      qs('#preSpO2').addEventListener('input',e=>{ const val=e.target.value; state.pre.SpO2=Number(val||0); checkSpInteractive(e.target, state.pre.SpO2); });
+      qs('#preBorgD').addEventListener('input',e=>state.pre.BorgD=Number(e.target.value||0));
+      qs('#preBorgF').addEventListener('input',e=>state.pre.BorgF=Number(e.target.value||0));
+
+      // Ayudas
+      qs('#walkAid').addEventListener('change',e=>state.aids.walkAid=e.target.value);
+      qs('#o2Used').addEventListener('change',e=>{ state.aids.o2Used=e.target.checked; qs('#o2Box').style.display=e.target.checked? 'flex':'none'; });
+      qs('#o2Mode').addEventListener('change',e=>state.aids.o2Mode=e.target.value);
+      qs('#o2Flow').addEventListener('input',e=>state.aids.o2Flow=numOrNull(e.target.value));
+
+      // During table
+      qs('#duringBody').addEventListener('input',e=>{ const el=e.target; const bind=el.getAttribute('data-bind'); if(!bind) return; const m=Number(bind.match(/^during-(\d+)-/)[1]); const row=state.during.find(r=>r.minuto===m); if(bind.endsWith('-fc')) row.FC=numOrNull(el.value); if(bind.endsWith('-spo2')){ row.SpO2=numOrNull(el.value); checkSpInteractive(el,row.SpO2); } if(bind.endsWith('-bd')) row.BorgD=numOrNull(el.value); if(bind.endsWith('-bf')) row.BorgF=numOrNull(el.value); if(bind.endsWith('-ev')){ const t=el.value.trim(); row.eventos=t?[t]:[]; if(t) recordEvent(`Min ${m}: ${t}`);} });
+
+      // During aids quick log
+      qs('#btnLogO2').onclick=()=>{ const v=numOrNull(qs('#o2FlowLive').value); if(v==null) return; state.aids.o2Changes.push({t:state.timer.elapsedMs,flow:v}); recordEvent(`Cambio de O₂ a ${v} L/min`); };
+      qs('#btnLogAid').onclick=()=>{ const v=qs('#walkAidLive').value; if(!v) return; state.aids.walkAidChanges.push({t:state.timer.elapsedMs,aid:v}); recordEvent(`Cambio de ayuda de marcha: ${v}`); };
+
+      // Laps/partial
+      qs('#incLap').onclick=()=>{ state.laps=Number(state.laps)+1; qs('#laps').value=state.laps; updateDistance(); };
+      qs('#decLap').onclick=()=>{ state.laps=Math.max(0,Number(state.laps)-1); qs('#laps').value=state.laps; updateDistance(); };
+      qs('#laps').addEventListener('input',e=>{ state.laps=Math.max(0,Number(e.target.value||0)); updateDistance(); });
+      qs('#partialMeters').addEventListener('input',e=>{ state.partialMeters=Math.max(0,Number(e.target.value||0)); updateDistance(); });
+
+      // Timer controls
+      qs('#btnStart').onclick=()=>{ startTimer(); };
+      qs('#btnPause').onclick=()=>{ pauseTimer(); qs('#btnResume').disabled=false; qs('#btnPause').disabled=true; };
+      qs('#btnResume').onclick=()=>{ resumeTimer(); qs('#btnResume').disabled=true; qs('#btnPause').disabled=false; };
+      qs('#btnEnd').onclick=()=>{ endTimer(); };
+      qs('#btnLap').onclick=()=>{ qs('#incLap').click(); recordEvent('Vuelta marcada'); };
+      qs('#btnEvent').onclick=()=>{ const t=prompt('Describe el evento:'); if(t){ recordEvent(t); const m=currentMin(); const row=state.during.find(r=>r.minuto===m); if(row) row.eventos.push(t); renderEvents(); } };
+      qs('#btnCriteria').onclick=()=>alert('Criterios de suspensión inmediata: dolor torácico, disnea intolerable, SpO₂ bajo umbral, calambres/inestabilidad, mareo/palidez/diaforesis.');
+
+      // Teclado (no interfiere al escribir)
+      document.addEventListener('keydown',e=>{ if(e.target.tagName==='INPUT' || e.target.tagName==='TEXTAREA') return; const k=e.key.toLowerCase(); if(k==='i'){ qs('#btnStart').click(); } else if(k===' '){ e.preventDefault(); if(!state.timer.running) qs('#btnResume').click(); else qs('#btnPause').click(); } else if(k==='l'){ qs('#btnLap').click(); } else if(k==='e'){ qs('#btnEvent').click(); } else if(k==='s'){ qs('#btnEnd').click(); } });
+
+      // Habilitar "Ir a POST" cuando termine
+      setInterval(()=>{ qs('#to3').disabled=!state.timer.finished; },300);
+    }
+
+    function checkStep1Ready(){
+      const reqs = {
+        id: !!qs('#idPaciente').value.trim(),
+        L: Number(qs('#longPasillo').value||0) > 0,
+        ckConsent: qs('#ckConsent')?.checked,
+        ckRest: qs('#ckRest')?.checked,
+        ckEquip: qs('#ckEquip')?.checked,
+        ckRCP: qs('#ckRCP')?.checked,
+        ckLayout: qs('#ckLayout')?.checked,
+      };
+      const labels = {
+        ckConsent:'Consentimiento/explicación',
+        ckRest:'Reposo ≥15 min',
+        ckEquip:'Equipo listo',
+        ckRCP:'RCP básico',
+        ckLayout:'Corredor adecuado',
+      };
+      const missing = [];
+      if(!reqs.id) missing.push('ID paciente');
+      if(!reqs.L) missing.push('Pasillo (m)');
+      for (const k of ['ckConsent','ckRest','ckEquip','ckRCP','ckLayout']){
+        if(!reqs[k]) missing.push(labels[k]);
+      }
+      const ok = missing.length === 0;
+      const statusEl = qs('#reqStatus');
+      if(statusEl){
+        statusEl.textContent = ok ? 'Listo para iniciar la prueba.' : ('Faltan: ' + missing.join(' • '));
+        statusEl.style.color = ok ? '#166534' : '#7f1d1d';
+      }
+      qs('#to2').disabled = !ok;
+    }
+    function validateStep1(){ if(!qs('#idPaciente').value.trim()) return alert('ID del paciente obligatorio.'),false; if(!qs('#longPasillo').value) return alert('Longitud de pasillo obligatoria.'),false; return true; }
+
+    function checkSpInteractive(inputEl, sp){ const str=String(inputEl.value||''); if(document.activeElement===inputEl && str.length<2) return; if(sp==null) return; const thr=Number(state.config.spo2Threshold||86); if(sp<thr && !state.flags.spUnderWarned){ banner(`Alerta: SpO₂ ${sp}% por debajo del umbral ${thr}%. Considere suspensión.`); beep(260,420); state.flags.spUnderWarned=true; } const base=numOrNull(state.pre.SpO2); if(base!=null && (base-sp)>4 && !state.flags.dropWarned){ banner(`Desaturación significativa: caída ${(base-sp)}% desde basal.`); beep(260,500); state.flags.dropWarned=true; } }
+
+    function recordEvent(t){ const ts=mmss(state.timer.elapsedMs); state.events.push(`[${ts}] ${t}`); renderEvents(); }
+    function renderEvents(){ const elList=document.createElement('ul'); elList.innerHTML=state.events.map(e=>`<li>${e}</li>`).join(''); qs('#events')?.replaceChildren(...elList.childNodes); }
+
+    function computeSummary(){ updateDistance(); const {pred,DE,LLN}=calcPred(); const dist=Number(state.distanceTotal||0); const pct=pred?(dist/pred)*100:null; const z=(DE&&pred)?((dist-pred)/DE):null; const M=computeAux(); qs('#sumDist').textContent=`${round(dist,1)} m`; qs('#sumPred').textContent=pred?`${round(pred,1)} m`:'–'; qs('#sumPct').textContent=pct?`${round(pct,1)} %`:'–'; qs('#sumLLN').textContent=(state.config.eqRef==='casas_bogota')?`${round(LLN,1)} m / z=${round(z,2)}`:'N/A'; qs('#sumHRpeak').textContent=(M.hrPeak!=null)?`${round(M.hrPeak,0)} lpm`:'–'; qs('#sumPctHRmax').textContent=(M.pctHRmax!=null)?`${round(M.pctHRmax,1)} %`:'–'; qs('#sumSpO2min').textContent=(M.spMin!=null)?`${round(M.spMin,0)} %`:'–'; qs('#sumSpO2delta').textContent=(M.spDelta!=null)?`${round(M.spDelta,0)} %`:'–';
+      const aidsTxt = aidSummary();
+      const distStr=(state.config.eqRef==='casas_bogota')? `Distancia = ${round(dist,1)} m (${pct?round(pct,1):'–'}% del predicho) ${dist>=LLN?'≥ LLN (esperado).':'< LLN (reducida).'}` : `Distancia = ${round(dist,1)} m (${pct?round(pct,1):'–'}% del predicho).`;
+      const desatStr=(M.spMin!=null)? `SpO₂ mínima ${round(M.spMin,0)}% (Δ ${M.spDelta!=null?round(M.spDelta,0):'–'}%). ${M.desatSig?'Desaturación relevante (>4% o <88%).':''}`:'Sin datos de SpO₂.';
+      const hrStr=(M.hrP!=null && M.hrPeak!=null)? `FC pico ${round(M.hrPeak,0)} vs FCmáx pred ${round(M.hrP,0)} → ${M.pctHRmax?round(M.pctHRmax,1):'–'}%${M.reservePct?`, reserva ${(round(M.reservePct,1))}%`:''}. ${M.pctHRmax!=null?(M.pctHRmax>=85?'Esfuerzo cercano a máximo (≥85%).':'Esfuerzo submáximo (<85%).'):''}`:'Sin datos suficientes de FC.';
+      qs('#analysisText').textContent=`${distStr} ${desatStr} ${hrStr} ${aidsTxt}`;
+      drawLine('#chartHR', collectSeries('FC'), {yMin:40,yMax:200,yLabel:'lpm'});
+      drawLine('#chartSpO2', collectSeries('SpO₂'), {yMin:70,yMax:100,yLabel:'%'});
+    }
+
+    function aidSummary(){
+      const a=state.aids; let s='';
+      if(a.walkAid && a.walkAid!=='ninguna') s+=` Realizada con ${a.walkAid}.`;
+      if(a.o2Used){ s+=` Con O₂ suplementario ${a.o2Flow!=null?`${a.o2Flow} L/min`:''} (${a.o2Mode}).`; if(a.o2Changes.length){ const last=a.o2Changes[a.o2Changes.length-1]; s+=` Hubo cambio de flujo durante la prueba (último ${last.flow} L/min).`; } }
+      if(!s) s=' Sin ayudas adicionales.'; return s;
+    }
+
+    function getPhrasesOrder(){ return ['inicio','min1','min2','min3','min4','min5','fin']; }
+
+    function age(d){ try{ const b=new Date(d), t=new Date(); let a=t.getFullYear()-b.getFullYear(); const m=t.getMonth()-b.getMonth(); if(m<0||(m===0&&t.getDate()<b.getDate())) a--; return a; }catch(_){ return null; } }
+    function updateIMC(){ const h=Number(state.anthropo.talla||0)/100, w=Number(state.anthropo.peso||0); const imc=(h>0&&w>0)?(w/(h*h)):null; state.anthropo.imc=imc?round(imc,1):null; const imcEl=qs('#imc'); if(imcEl) imcEl.value=imc?round(imc,1):''; }
+
+    // ====== PDF ======
+    function printReport(){
+      // Datos
+      const now=new Date();
+      const fullName=[state.patient.nombres,state.patient.apellidos].filter(Boolean).join(' ');
+      const id=state.patient.id||'';
+      const age=state.patient.edad!=null?`${state.patient.edad}`:'–';
+      const sex=state.patient.sexoBiologico||'–';
+      const L=state.context.longPasillo||0;
+      const alt=state.anthropo.altitud!=null?state.anthropo.altitud:'–';
+      const thr=state.config.spo2Threshold;
+      const eq=state.config.eqRef==='casas_bogota'?'Casas–Bogotá':'Troosters 1999';
+
+      const {pred,DE,LLN}=calcPred();
+      const dist=Number(state.distanceTotal||0);
+      const pct=pred?(dist/pred)*100:null;
+      const z=(DE&&pred)?((dist-pred)/DE):null;
+
+      const M=computeAux();
+      const hrTanaka=hrPred(state.patient.edad,'tanaka',sex);
+      const hrGulati=hrPred(state.patient.edad,'gulati',sex);
+      const hrFox=hrPred(state.patient.edad,'fox',sex);
+      const pTanaka=(M.hrPeak&&hrTanaka)?round(100*M.hrPeak/hrTanaka,1):'–';
+      const pGulati=(M.hrPeak&&hrGulati)?round(100*M.hrPeak/hrGulati,1):'–';
+      const pFox=(M.hrPeak&&hrFox)?round(100*M.hrPeak/hrFox,1):'–';
+
+      // Canvases a imágenes
+      const imgHR=qs('#chartHR').toDataURL('image/png');
+      const imgSp=qs('#chartSpO2').toDataURL('image/png');
+
+      const duringRows=state.during.map(d=>`<tr><td>${d.minuto}</td><td>${d.FC??''}</td><td>${d.SpO2??''}</td><td>${d.BorgD??''}</td><td>${d.BorgF??''}</td><td>${(d.eventos||[]).join('; ')}</td></tr>`).join('');
+      const postRows=`<tr><td>${state.post.A.min}</td><td>${state.post.A.FC??''}</td><td>${state.post.A.SpO2??''}</td><td>${state.post.A.BorgD??''}</td><td>${state.post.A.BorgF??''}</td></tr>
+                      <tr><td>${state.post.B.min}</td><td>${state.post.B.FC??''}</td><td>${state.post.B.SpO2??''}</td><td>${state.post.B.BorgD??''}</td><td>${state.post.B.BorgF??''}</td></tr>`;
+
+      const aidsTxt = aidSummary();
+
+      const html=`<!DOCTYPE html><html><head><meta charset="utf-8"><title>Reporte 6MWT ${id}</title>
+      <style>
+        @page { size: Letter; margin: 12mm; }
+        html,body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif;color:#111;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+        h1{font-size:18px;margin:0 0 4px;font-weight:800}
+        h2{font-size:14px;margin:12px 0 4px}
+        .muted{color:#555}
+        .row{display:flex;gap:8px;align-items:stretch}
+        .col{flex:1}
+        .card{border:1px solid #ddd;border-radius:8px;padding:8px;background:#fff}
+        .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+        .kv{border:1px solid #eee;border-radius:6px;padding:6px}
+        .kv .k{font-size:11px;color:#555}
+        .kv .v{font-size:14px;font-weight:700}
+        table{width:100%;border-collapse:collapse;font-size:11px}
+        th,td{border:1px solid #ddd;padding:4px;text-align:center}
+        .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+        .logoBox{width:42mm;height:18mm;border:1px dashed #bbb;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#888;font-size:11px}
+        .foot{font-size:10px;color:#666;margin-top:6px}
+        .badge{display:inline-block;border:1px solid #1e3a8a;color:#1e3a8a;border-radius:999px;padding:2px 6px;font-size:10px}
+      </style></head><body>
+        <div class="header">
+          <div>
+            <h1>Prueba de Caminata de 6 Minutos (6MWT) — ATS/ERS</h1>
+            <div class="muted">ID: <b>${id}</b> • Paciente: <b>${fullName||'—'}</b> • Edad/Sexo: <b>${age}/${sex}</b> • Fecha: <b>${now.toLocaleString()}</b></div>
+            <div class="muted">Ciudad: ${state.patient.ciudad||'—'} • Pasillo: ${L} m • Altitud: ${alt} m • Umbral SpO₂: ${thr}% • Ecuación: ${eq}</div>
+          </div>
+          <div class="logoBox">Área para logo</div>
+        </div>
+
+        <div class="grid">
+          <div class="kv"><div class="k">Distancia total</div><div class="v">${round(dist,1)} m</div></div>
+          <div class="kv"><div class="k">Predicho</div><div class="v">${pred?round(pred,1)+' m':'—'}</div></div>
+          <div class="kv"><div class="k">% del predicho</div><div class="v">${pct?round(pct,1)+' %':'—'}</div></div>
+          <div class="kv"><div class="k">LLN / z-score</div><div class="v">${state.config.eqRef==='casas_bogota'?`${round(LLN,1)} m / z=${round(z,2)}`:'N/A'}</div></div>
+          <div class="kv"><div class="k">FC pico</div><div class="v">${M.hrPeak!=null?round(M.hrPeak,0)+' lpm':'—'}</div></div>
+          <div class="kv"><div class="k">%FCmáx Tanaka</div><div class="v">${pTanaka}</div></div>
+          <div class="kv"><div class="k">%FCmáx Gulati (♀)</div><div class="v">${pGulati}</div></div>
+          <div class="kv"><div class="k">%FCmáx Fox</div><div class="v">${pFox}</div></div>
+          <div class="kv"><div class="k">SpO₂ basal</div><div class="v">${state.pre.SpO2??'—'} %</div></div>
+          <div class="kv"><div class="k">SpO₂ mínima</div><div class="v">${M.spMin!=null?round(M.spMin,0)+' %':'—'}</div></div>
+          <div class="kv"><div class="k">Δ SpO₂</div><div class="v">${M.spDelta!=null?round(M.spDelta,0)+' %':'—'}</div></div>
+          <div class="kv"><div class="k">Ayudas/O₂</div><div class="v">${aidsTxt}</div></div>
+        </div>
+
+        <div class="row" style="margin-top:8px">
+          <div class="col card">
+            <h2>Curva de FC</h2>
+            <img src="${imgHR}" style="width:100%"/>
+          </div>
+          <div class="col card">
+            <h2>Curva de SpO₂</h2>
+            <img src="${imgSp}" style="width:100%"/>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:8px">
+          <div class="col card">
+            <h2>Registro durante la prueba (1–6 min)</h2>
+            <table><thead><tr><th>Min</th><th>FC</th><th>SpO₂</th><th>Borg D</th><th>Borg F</th><th>Eventos</th></tr></thead><tbody>${duringRows}</tbody></table>
+          </div>
+          <div class="col card">
+            <h2>Post (min ${state.post.A.min} y ${state.post.B.min})</h2>
+            <table><thead><tr><th>Min</th><th>FC</th><th>SpO₂</th><th>Borg D</th><th>Borg F</th></tr></thead><tbody>${postRows}</tbody></table>
+            <h2 style="margin-top:8px">Conclusiones</h2>
+            <div>${(qs('#conclusiones').value||'').replace(/</g,'&lt;')}</div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:8px">
+          <h2>Interpretación automática</h2>
+          <div>${(qs('#analysisText').textContent||'').replace(/</g,'&lt;')}</div>
+          <div class="foot">Notas: Casas–Bogotá deriva de población sana a ~2640 m; verifique aplicabilidad. Motivación estandarizada ATS/ERS y criterios de suspensión. Este informe no reemplaza el juicio clínico.</div>
+        </div>
+
+        <div class="row" style="margin-top:12px">
+          <div class="col">
+            <div class="foot">Firma y sello</div>
+            <div style="border-top:1px solid #aaa;height:28px"></div>
+          </div>
+          <div class="col">
+            <div class="foot">Operador</div>
+            <div style="border-top:1px solid #aaa;height:28px"></div>
+          </div>
+        </div>
+      </body></html>`;
+
+      const w=window.open('about:blank');
+      if(!w){ alert('Por favor permita pop‑ups para generar el PDF.'); return; }
+      w.document.open();
+      w.document.write(html);
+      w.document.close();
+      w.focus();
+      w.onload=()=>{ w.print(); };
+    }
+
+    function init(){ buildStepper(); buildDuring(); buildPost(); bind(); renderOpList(); qs('#spo2Echo').textContent=state.config.spo2Threshold; ['#btnPause','#btnResume','#btnLap','#btnEvent','#btnEnd','#incLap','#decLap','#laps','#btnLogO2','#btnLogAid'].forEach(sel=> qs(sel).disabled=true); checkStep1Ready(); console.info('[6MWT] v0.5.1 listo.'); }
+
+    init();
+  </script>
+</body>
+</html>
