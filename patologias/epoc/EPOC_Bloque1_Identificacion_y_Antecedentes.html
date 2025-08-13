@@ -1,0 +1,454 @@
+
+    <!doctype html>
+    <html lang="es-CO">
+    <head>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+      <title>Bloque 1 · Identificación y antecedentes</title>
+
+<style>
+  :root{
+    --bg:#f7f8fa;
+    --card:#ffffff;
+    --text:#0f172a;
+    --muted:#6b7280;
+    --primary:#0a84ff;
+    --border:#e5e7eb;
+    --shadow:0 10px 24px rgba(0,0,0,.08);
+    --radius:16px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;padding:32px;
+    background:var(--bg); color:var(--text);
+    font-family:"Gadugi","Segoe UI",system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+  }
+  .container{max-width:1080px;margin:0 auto}
+  .card{
+    background:var(--card); border:1px solid var(--border);
+    border-radius:var(--radius); box-shadow:var(--shadow);
+    padding:24px; margin:18px 0;
+  }
+  h1{font-size:28px;letter-spacing:-.02em;margin:0 0 8px}
+  h2{font-size:20px;letter-spacing:-.01em;margin:0 0 10px}
+  p.lead{color:var(--muted);margin:0 0 16px}
+  .grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+  label{font-size:12px;color:var(--muted);font-weight:600;display:block;margin:6px 0}
+  input[type="text"],input[type="date"],input[type="time"],
+  input[type="number"],select,textarea{
+    width:100%;padding:12px 14px;border:1px solid var(--border);
+    border-radius:12px;background:#fff;font-size:14px;outline:none;
+    transition:border .2s,box-shadow .2s;
+  }
+  input:focus,select:focus,textarea:focus{
+    border-color:var(--primary); box-shadow:0 0 0 3px rgba(10,132,255,.15);
+  }
+  textarea{min-height:120px;resize:vertical}
+  .hint{font-size:11px;color:var(--muted)}
+  .row{display:flex;gap:12px;flex-wrap:wrap}
+  .pill{padding:6px 10px;border-radius:999px;border:1px solid var(--border);background:#fff}
+  .section{margin-top:8px}
+  .kpi{display:flex;align-items:center;gap:8px;margin:6px 0}
+  .switch{
+    position:relative;display:inline-block;width:44px;height:26px;vertical-align:middle
+  }
+  .switch input{display:none}
+  .slider{
+    position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#d1d5db;transition:.2s;border-radius:999px;
+  }
+  .slider:before{
+    position:absolute;content:"";height:20px;width:20px;left:3px;top:3px;background:white;transition:.2s;border-radius:50%;
+    box-shadow:0 1px 2px rgba(0,0,0,.25);
+  }
+  .switch input:checked + .slider{background:var(--primary)}
+  .switch input:checked + .slider:before{transform:translateX(18px)}
+  .btn{
+    border:none;border-radius:12px;padding:12px 16px;font-weight:700;cursor:pointer;
+    box-shadow:0 10px 18px rgba(10,132,255,.2);transition:transform .05s ease;
+  }
+  .btn:active{transform:translateY(1px)}
+  .btn-primary{background:var(--primary);color:#fff}
+  .btn-ghost{background:#fff;border:1px solid var(--border);color:var(--text)}
+  .footer{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;margin-top:12px}
+  .badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:#eef2ff;color:#3730a3;font-size:12px;font-weight:700}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
+  .small{font-size:12px;color:var(--muted)}
+  .tight{line-height:1.2}
+  .cta{display:flex;justify-content:flex-end;margin-top:16px}
+  .summary{background:#0f172a;color:#e5e7eb;border-radius:12px;padding:12px 12px 6px}
+  .summary h3{margin:0 0 8px;font-size:14px;color:#93c5fd}
+  .summary textarea{background:transparent;color:#e5e7eb;border-color:#334155}
+  .chip-group{display:flex;gap:8px;flex-wrap:wrap}
+  .chip{border:1px solid var(--border);border-radius:999px;padding:8px 12px;background:#fff;display:flex;gap:8px;align-items:center}
+  .chip input{margin:0}
+  .sp{height:6px}
+  .divider{height:1px;background:var(--border);margin:8px 0 12px}
+</style>
+
+    </head>
+    <body>
+      <div class="container">
+        <div class="card">
+          <h1>Bloque 1 · Identificación y antecedentes</h1>
+          <p class="lead">Datos básicos, exposiciones y comorbilidades. Campos con límites razonables, automatización de IMC y paquetes‑año.</p>
+          <div class="badge">Centro de Experiencia EPOC • Estándar GOLD 2025 + GesEPOC</div>
+        </div>
+
+<div class="card">
+  <h2>Identificación</h2>
+  <div class="grid">
+    <div>
+      <label for="historia">No. Historia (máx 14)</label>
+      <input id="historia" type="text" maxlength="14" placeholder="EPOC-001-2025">
+    </div>
+    <div>
+      <label for="fecha">Fecha de evaluación</label>
+      <input id="fecha" type="date">
+    </div>
+    <div>
+      <label for="nombre">Nombre completo (máx 60)</label>
+      <input id="nombre" type="text" maxlength="60" placeholder="Nombres y apellidos">
+    </div>
+    <div>
+      <label for="sexo">Sexo</label>
+      <select id="sexo">
+        <option value="">Seleccione…</option>
+        <option>Femenino</option>
+        <option>Masculino</option>
+        <option>Otro</option>
+      </select>
+    </div>
+    <div>
+      <label for="edad">Edad (0–120, máx 3 dígitos)</label>
+      <input id="edad" type="number" min="0" max="120" oninput="if(this.value.length>3)this.value=this.value.slice(0,3);" placeholder="años">
+    </div>
+    <div>
+      <label for="dob">Fecha de nacimiento (opcional)</label>
+      <input id="dob" type="date">
+      <div class="hint">Si ingresa la fecha se calcula la edad automáticamente.</div>
+    </div>
+  </div>
+  <div class="divider"></div>
+  <h2>Mediciones básicas</h2>
+  <div class="grid">
+    <div>
+      <label for="peso">Peso (kg)</label>
+      <input id="peso" type="number" min="20" max="250" step="0.1" placeholder="kg">
+    </div>
+    <div>
+      <label for="talla">Talla (cm)</label>
+      <input id="talla" type="number" min="100" max="230" step="0.1" placeholder="cm">
+    </div>
+    <div>
+      <label for="imc">IMC (auto)</label>
+      <input id="imc" type="text" readonly>
+      <div class="hint">Se calcula con peso y talla. Se clasifica en <span id="imcCat">—</span>.</div>
+    </div>
+    <div>
+      <label for="sat">SatO₂ basal (%)</label>
+      <input id="sat" type="number" min="50" max="100" step="1">
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Exposición: tabaco, biomasa y ocupacional</h2>
+  <div class="grid">
+    <div>
+      <label for="tabaquismo">Tabaquismo</label>
+      <select id="tabaquismo">
+        <option value="">Seleccione…</option>
+        <option>Nunca fumador</option>
+        <option>Exfumador</option>
+        <option>Fumador activo</option>
+      </select>
+    </div>
+    <div>
+      <label for="cigDia">Cigarrillos/día (0–80)</label>
+      <input id="cigDia" type="number" min="0" max="80" step="1">
+    </div>
+    <div>
+      <label for="anosFum">Años fumados (0–80)</label>
+      <input id="anosFum" type="number" min="0" max="80" step="1">
+    </div>
+    <div>
+      <label for="packYears">Paquetes‑año (auto)</label>
+      <input id="packYears" type="text" readonly>
+    </div>
+    <div>
+      <label for="biomasa">Exposición a biomasa</label>
+      <select id="biomasa">
+        <option value="">Seleccione…</option>
+        <option>Nunca</option>
+        <option>Pasada</option>
+        <option>Actual</option>
+      </select>
+    </div>
+    <div>
+      <label for="anosBiom">Años de biomasa</label>
+      <input id="anosBiom" type="number" min="0" max="70" step="1">
+    </div>
+  </div>
+  <div class="section">
+    <label>Exposición ocupacional relevante</label>
+    <div class="chip-group">
+      <label class="chip"><input type="checkbox" class="occ" value="Polvo mineral">Polvo mineral</label>
+      <label class="chip"><input type="checkbox" class="occ" value="Humos diésel">Humos diésel</label>
+      <label class="chip"><input type="checkbox" class="occ" value="Agricultura">Agricultura</label>
+      <label class="chip"><input type="checkbox" class="occ" value="Construcción">Construcción</label>
+      <label class="chip"><input type="checkbox" class="occ" value="Textil">Textil</label>
+      <label class="chip"><input type="checkbox" class="occ" value="Fundición">Fundición</label>
+      <label class="chip"><input type="checkbox" class="occ" value="Otra">Otra</label>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Comorbilidades y antecedentes</h2>
+  <div class="chip-group">
+    <label class="chip"><input type="checkbox" class="comorb" value="Hipertensión">Hipertensión</label>
+    <label class="chip"><input type="checkbox" class="comorb" value="Cardiopatía isquémica">Cardiopatía isquémica</label>
+    <label class="chip"><input type="checkbox" class="comorb" value="Fibrilación auricular">Fibrilación auricular</label>
+    <label class="chip"><input type="checkbox" class="comorb" value="Diabetes">Diabetes</label>
+    <label class="chip"><input type="checkbox" class="comorb" value="Osteoporosis">Osteoporosis</label>
+    <label class="chip"><input type="checkbox" class="comorb" value="Ansiedad/depresión">Ansiedad/depresión</label>
+    <label class="chip"><input type="checkbox" class="comorb" value="SAHOS">SAHOS</label>
+    <label class="chip"><input type="checkbox" class="comorb" value="Cáncer de pulmón">Cáncer de pulmón</label>
+    <label class="chip"><input type="checkbox" class="comorb" value="Otra">Otra</label>
+  </div>
+  <div class="grid">
+    <div>
+      <label for="aatHecho">Cribado de AAT realizado</label>
+      <select id="aatHecho">
+        <option value="">Seleccione…</option>
+        <option>Sí</option>
+        <option>No</option>
+      </select>
+    </div>
+    <div>
+      <label for="aatValor">AAT (mg/dL, si aplica)</label>
+      <input id="aatValor" type="number" min="0" max="300" step="0.1">
+    </div>
+    <div>
+      <label for="alergias">Alergias (máx 300)</label>
+      <input id="alergias" type="text" maxlength="300" placeholder="Medicamentos, alimentos, otros">
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Tratamiento actual y vacunas</h2>
+  <div class="grid">
+    <div>
+      <label>Inhaladores</label>
+      <div class="chip-group">
+        <label class="chip"><input type="checkbox" class="trat" value="LAMA">LAMA</label>
+        <label class="chip"><input type="checkbox" class="trat" value="LABA">LABA</label>
+        <label class="chip"><input type="checkbox" class="trat" value="LABA/LAMA">LABA/LAMA</label>
+        <label class="chip"><input type="checkbox" class="trat" value="ICS">ICS</label>
+        <label class="chip"><input type="checkbox" class="trat" value="Triple (LABA/LAMA/ICS)">Triple</label>
+        <label class="chip"><input type="checkbox" class="trat" value="SABA">SABA</label>
+        <label class="chip"><input type="checkbox" class="trat" value="SAMA">SAMA</label>
+      </div>
+    </div>
+    <div>
+      <label>Adyuvantes</label>
+      <div class="chip-group">
+        <label class="chip"><input type="checkbox" class="trat" value="Roflumilast">Roflumilast</label>
+        <label class="chip"><input type="checkbox" class="trat" value="Macrólido">Macrólido</label>
+        <label class="chip"><input type="checkbox" class="trat" value="Mucolítico">Mucolítico</label>
+        <label class="chip"><input type="checkbox" class="trat" value="Oxígeno">Oxígeno</label>
+        <label class="chip"><input type="checkbox" class="trat" value="NIV">NIV</label>
+      </div>
+    </div>
+    <div>
+      <label for="vacunas">Vacunas (estado)</label>
+      <select id="vacunas" multiple size="6">
+        <option>Influenza: al día</option>
+        <option>Influenza: pendiente</option>
+        <option>Neumococo: al día</option>
+        <option>Neumococo: pendiente</option>
+        <option>COVID-19: al día</option>
+        <option>COVID-19: pendiente</option>
+        <option>Td/Tdap: al día</option>
+        <option>Td/Tdap: pendiente</option>
+        <option>Herpes Zóster: al día</option>
+        <option>Herpes Zóster: pendiente</option>
+        <option>RSV: al día</option>
+        <option>RSV: pendiente</option>
+      </select>
+      <div class="hint">Ctrl/Cmd + clic para múltiples.</div>
+    </div>
+  </div>
+</div>
+
+        <div class="card summary">
+          <h3>Resumen narrativo del bloque (copiable)</h3>
+          <textarea id="resumen" placeholder="Aquí se generará el resumen narrativo con base en los campos diligenciados." readonly></textarea>
+          <div class="footer">
+            <button class="btn btn-primary" onclick="copiarResumen()">Copiar resumen</button>
+            <button class="btn btn-ghost" onclick="guardarDatos()">Guardar</button>
+            <button class="btn btn-ghost" onclick="limpiarDatos()">Limpiar</button>
+          </div>
+          <p class="small tight">Nota: los datos se guardan en este navegador mediante <span class="mono">localStorage</span>.</p>
+        </div>
+      </div>
+      <script>
+
+const $ = (id)=>document.getElementById(id);
+const getChecks = (cls)=>[...document.querySelectorAll('.'+cls+':checked')].map(c=>c.value);
+const saveKey = 'epoc_block1';
+
+function calcEdadFromDOB(){
+  const dob = $('dob').value;
+  if(!dob) return;
+  const d = new Date(dob);
+  const today = new Date();
+  let age = today.getFullYear()-d.getFullYear();
+  const m = today.getMonth()-d.getMonth();
+  if(m<0 || (m===0 && today.getDate()<d.getDate())) age--;
+  if(age>=0){ $('edad').value = String(Math.min(age,120)); }
+}
+
+function calcIMC(){
+  const peso = parseFloat($('peso').value||'0');
+  const talla = parseFloat($('talla').value||'0');
+  if(peso>0 && talla>0){
+    const imc = peso / Math.pow(talla/100,2);
+    $('imc').value = imc.toFixed(1);
+    let cat='—';
+    if(imc<18.5) cat='Bajo peso';
+    else if(imc<25) cat='Normal';
+    else if(imc<30) cat='Sobrepeso';
+    else cat='Obesidad';
+    $('imcCat').textContent = cat;
+    localStorage.setItem('epoc_bmi', imc.toFixed(1));
+  }else{
+    $('imc').value = '';
+    $('imcCat').textContent = '—';
+    localStorage.removeItem('epoc_bmi');
+  }
+}
+
+function calcPackYears(){
+  const c = parseFloat($('cigDia').value||'0');
+  const a = parseFloat($('anosFum').value||'0');
+  const py = (c/20)*a;
+  $('packYears').value = (py>0?py.toFixed(1):'');
+  localStorage.setItem('epoc_packyears', py.toFixed(1));
+}
+
+function updateResumen(){
+  const sexo = $('sexo').value;
+  const edad = $('edad').value;
+  const peso = $('peso').value, talla=$('talla').value;
+  const imc = $('imc').value, imcCat = $('imcCat').textContent;
+  const sat = $('sat').value;
+  const taba = $('tabaquismo').value;
+  const py = $('packYears').value;
+  const biom = $('biomasa').value, anosBiom = $('anosBiom').value;
+  const occ = getChecks('occ');
+  const comor = getChecks('comorb');
+  const aatH = $('aatHecho').value, aatV = $('aatValor').value;
+  const alerg = $('alergias').value;
+  const trat = getChecks('trat');
+  const vacSel = [...$('vacunas').selectedOptions].map(o=>o.value||o.text).join('; ');
+  const nombre = $('nombre').value;
+  const fecha = $('fecha').value;
+  const historia = $('historia').value;
+
+  const parts = [];
+  if(historia) parts.push(`Historia ${historia}`);
+  if(fecha) parts.push(`evaluación ${fecha}`);
+  if(nombre) parts.push(`Paciente ${nombre}`);
+  if(sexo) parts.push(sexo.toLowerCase());
+  if(edad) parts.push(`${edad} años`);
+  if(peso && talla && imc) parts.push(`${peso} kg, ${talla} cm (IMC ${imc} ${imcCat})`);
+  if(sat) parts.push(`SatO₂ basal ${sat}%`);
+
+  let s = parts.join(', ') + '. ';
+  if(taba){ s += `${taba}`; if(py) s += `, ${py} paquetes‑año`; s += '. '; }
+  if(biom){ s += `Exposición a biomasa: ${biom}`; if(anosBiom) s+=` (${anosBiom} años)`; s+='. '; }
+  if(occ.length) s += `Exposición ocupacional: ${occ.join(', ')}. `;
+  if(comor.length) s += `Comorbilidades: ${comor.join(', ')}. `;
+  if(aatH){ s += `Cribado de AAT: ${aatH}`; if(aatV) s+=` (valor ${aatV} mg/dL)`; s+='. '; }
+  if(trat.length) s += `Tratamiento actual: ${trat.join(', ')}. `;
+  if(vacSel) s += `Vacunación: ${vacSel}. `;
+  if(alerg) s += `Alergias: ${alerg}.`;
+
+  $('resumen').value = s.trim();
+
+  // Persist core cross-block values
+  localStorage.setItem('epoc_age', edad||'');
+  localStorage.setItem('epoc_sexo', sexo||'');
+  localStorage.setItem('epoc_sat', $('sat').value||'');
+}
+
+function guardarDatos(){
+  const data = {
+    historia:$('historia').value, fecha:$('fecha').value, nombre:$('nombre').value,
+    sexo:$('sexo').value, edad:$('edad').value, dob:$('dob').value,
+    peso:$('peso').value, talla:$('talla').value, imc:$('imc').value,
+    sat:$('sat').value, tabaquismo:$('tabaquismo').value,
+    cigDia:$('cigDia').value, anosFum:$('anosFum').value, packYears:$('packYears').value,
+    biomasa:$('biomasa').value, anosBiom:$('anosBiom').value,
+    occ:getChecks('occ'), comorb:getChecks('comorb'),
+    aatHecho:$('aatHecho').value, aatValor:$('aatValor').value,
+    alergias:$('alergias').value, trat:getChecks('trat'),
+    vacunas:[...$('vacunas').selectedOptions].map(o=>o.value||o.text),
+    resumen:$('resumen').value
+  };
+  localStorage.setItem(saveKey, JSON.stringify(data));
+  alert('Datos guardados en este navegador.');
+}
+
+function limpiarDatos(){
+  localStorage.removeItem(saveKey);
+  // Also clear cross-block where appropriate
+  ['epoc_bmi','epoc_packyears','epoc_age','epoc_sexo','epoc_sat'].forEach(k=>localStorage.removeItem(k));
+  location.reload();
+}
+
+function cargarDatos(){
+  const raw = localStorage.getItem(saveKey);
+  if(!raw) return;
+  try{
+    const d = JSON.parse(raw);
+    for(const k in d){
+      if(['occ','comorb','trat','vacunas'].includes(k)) continue;
+      if($(k)) $(k).value = d[k];
+    }
+    (d.occ||[]).forEach(v=>{ const el=[...document.querySelectorAll('.occ')].find(c=>c.value===v); if(el) el.checked=true; });
+    (d.comorb||[]).forEach(v=>{ const el=[...document.querySelectorAll('.comorb')].find(c=>c.value===v); if(el) el.checked=true; });
+    (d.trat||[]).forEach(v=>{ const el=[...document.querySelectorAll('.trat')].find(c=>c.value===v); if(el) el.checked=true; });
+    (d.vacunas||[]).forEach(v=>{ const opt=[...$('vacunas').options].find(o=> (o.value||o.text)===v); if(opt) opt.selected=true; });
+  }catch(e){ console.warn(e); }
+}
+
+function copiarResumen(){
+  const ta = $('resumen');
+  ta.select(); ta.setSelectionRange(0, 99999);
+  document.execCommand('copy');
+}
+
+// Events
+['dob'].forEach(id=>$(id).addEventListener('change', ()=>{calcEdadFromDOB(); updateResumen();}));
+['peso','talla'].forEach(id=>$(id).addEventListener('input', ()=>{calcIMC(); updateResumen();}));
+['cigDia','anosFum'].forEach(id=>$(id).addEventListener('input', ()=>{calcPackYears(); updateResumen();}));
+['sexo','edad','sat','tabaquismo','biomasa','anosBiom','aatHecho','aatValor','alergias','historia','fecha','nombre'].forEach(id=>$(id).addEventListener('input', updateResumen));
+document.querySelectorAll('.occ,.comorb,.trat').forEach(e=>e.addEventListener('change', updateResumen));
+$('vacunas').addEventListener('change', updateResumen);
+
+// Init
+cargarDatos();
+calcIMC();
+calcPackYears();
+updateResumen();
+
+      </script>
+    </body>
+    </html>
