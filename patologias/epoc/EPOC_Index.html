@@ -1,0 +1,159 @@
+
+<!doctype html>
+<html lang="es-CO">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Centro de Experiencia EPOC · Índice y Exportador</title>
+
+<style>
+  :root{
+    --bg:#f7f8fa; --card:#ffffff; --text:#0f172a; --muted:#6b7280; --primary:#0a84ff;
+    --border:#e5e7eb; --shadow:0 10px 24px rgba(0,0,0,.08); --radius:16px;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;padding:32px;background:var(--bg);color:var(--text);
+    font-family:"Gadugi","Segoe UI",system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;
+  }
+  .container{max-width:1080px;margin:0 auto}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);padding:24px;margin:18px 0}
+  h1{font-size:28px;margin:0 0 8px}
+  p.lead{color:var(--muted);margin:0 0 14px}
+  .grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+  .btn{border:none;border-radius:12px;padding:12px 16px;font-weight:700;cursor:pointer;box-shadow:0 10px 18px rgba(10,132,255,.2);transition:transform .05s ease}
+  .btn:active{transform:translateY(1px)}
+  .btn-primary{background:var(--primary);color:#fff}
+  .btn-ghost{background:#fff;border:1px solid var(--border);color:var(--text)}
+  .links a{display:flex;justify-content:space-between;gap:10px;text-decoration:none;color:var(--text);padding:14px 16px;border:1px solid var(--border);border-radius:12px;background:#fff}
+  .badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:#eef2ff;color:#3730a3;font-size:12px;font-weight:700}
+  textarea{width:100%;min-height:120px;border:1px solid var(--border);border-radius:12px;padding:12px}
+  .summary{background:#0f172a;color:#e5e7eb;border-radius:12px;padding:16px}
+  .summary h3{margin:0 0 10px;font-size:16px;color:#93c5fd}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
+  .row{display:flex;gap:12px;flex-wrap:wrap}
+  .pill{padding:6px 10px;border-radius:999px;border:1px solid var(--border);background:#fff}
+  .small{font-size:12px;color:#6b7280}
+  .print{background:#fff;color:#0f172a;padding:18px;border:1px dashed var(--border);border-radius:12px}
+  @media print{
+    .no-print{display:none}
+    body{padding:0}
+    .print{border:0}
+  }
+</style>
+
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h1>Centro de Experiencia EPOC · Índice y Exportador</h1>
+      <p class="lead">Navegación, consolidado de datos (localStorage), exportación a JSON y reporte imprimible (PDF vía imprimir).</p>
+      <div class="badge">Estilo “diseñalo como steve jobs” · Gadugi</div>
+    </div>
+
+    <div class="card links no-print">
+      <div class="grid">
+        <a href="EPOC_Bloque1_Identificacion_y_Antecedentes.html" target="_blank"><span>Bloque 1 · Identificación y antecedentes</span><span>⟶</span></a>
+        <a href="EPOC_Bloque2_Sintomas_Impacto_Exacerbaciones.html" target="_blank"><span>Bloque 2 · Síntomas, impacto y exacerbaciones</span><span>⟶</span></a>
+        <a href="EPOC_Bloque3_Paraclinicos_y_Fisiologia.html" target="_blank"><span>Bloque 3 · Paraclínicos y fisiología</span><span>⟶</span></a>
+        <a href="EPOC_Bloque4_Fenotipificacion_y_Tratamiento.html" target="_blank"><span>Bloque 4 · Fenotipificación y tratamiento</span><span>⟶</span></a>
+        <a href="EPOC_Bloque5_Plan_Educacion_KPI.html" target="_blank"><span>Bloque 5 · Plan de manejo, educación y KPI</span><span>⟶</span></a>
+      </div>
+      <p class="small">Sugerencia: diligencia cada bloque (se guardan en este navegador). Luego vuelve a este índice para consolidar.</p>
+    </div>
+
+    <div class="card no-print">
+      <div class="row">
+        <button class="btn btn-ghost" onclick="cargar()">Cargar datos</button>
+        <button class="btn btn-primary" onclick="exportarJSON()">Exportar JSON</button>
+        <button class="btn btn-ghost" onclick="window.print()">Exportar Reporte (Imprimir/PDF)</button>
+        <button class="btn btn-ghost" onclick="limpiar()">Limpiar todo</button>
+      </div>
+      <p class="small">El archivo JSON incluye el contenido crudo de cada bloque (epoc_block1…epoc_block5) y los cálculos clave (GOLD, BODE, BODEx, guías ICS, etc.).</p>
+    </div>
+
+    <div class="card summary print" id="reporte">
+      <h3>Reporte consolidado</h3>
+      <div id="meta" class="small"></div>
+      <h4>Bloque 1</h4>
+      <textarea id="b1" readonly placeholder="Resumen Bloque 1"></textarea>
+      <h4>Bloque 2</h4>
+      <textarea id="b2" readonly placeholder="Resumen Bloque 2"></textarea>
+      <h4>Bloque 3</h4>
+      <textarea id="b3" readonly placeholder="Resumen Bloque 3"></textarea>
+      <h4>Bloque 4</h4>
+      <textarea id="b4" readonly placeholder="Resumen Bloque 4"></textarea>
+      <h4>Bloque 5</h4>
+      <textarea id="b5" readonly placeholder="Resumen Bloque 5"></textarea>
+      <div class="row">
+        <div class="pill"><span>GOLD</span>: <span id="gold">—</span></div>
+        <div class="pill"><span>FEV₁% pred</span>: <span id="fev1pct">—</span></div>
+        <div class="pill"><span>BODE</span>: <span id="bode">—</span></div>
+        <div class="pill"><span>BODEx</span>: <span id="bodex">—</span></div>
+        <div class="pill"><span>Eosinófilos</span>: <span id="eos">—</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <p class="small mono">Nota técnica: El consolidado lee <code>localStorage</code> (epoc_block1…epoc_block5 y claves auxiliares). Para PDF usa impresión del navegador.</p>
+    </div>
+  </div>
+
+<script>
+function cargar(){
+  const blocks = [];
+  for(let i=1;i<=5;i++){
+    try{ blocks.push(JSON.parse(localStorage.getItem('epoc_block'+i)||'null')); }catch(e){ blocks.push(null); }
+  }
+  const now = new Date();
+  document.getElementById('meta').textContent = 'Generado: '+ now.toLocaleString();
+
+  // Resúmenes si existen
+  const ids=['b1','b2','b3','b4','b5'];
+  ids.forEach((id,idx)=>{
+    const d = blocks[idx];
+    document.getElementById(id).value = (d && d.resumen)? d.resumen : '';
+  });
+
+  // KPIs/cálculos claves (si están guardados)
+  const gold = localStorage.getItem('epoc_gold_group') || '—';
+  const fev1pct = localStorage.getItem('epoc_fev1pct') || '—';
+  const eosAbs = localStorage.getItem('epoc_eos_abs') || '—';
+  let bode='—', bodex='—';
+  try{
+    const b3 = blocks[2];
+    if(b3){ bode = b3.bode || '—'; bodex = b3.bodex || '—'; }
+  }catch(e){}
+  document.getElementById('gold').textContent = gold;
+  document.getElementById('fev1pct').textContent = fev1pct;
+  document.getElementById('bode').textContent = bode;
+  document.getElementById('bodex').textContent = bodex;
+  document.getElementById('eos').textContent = eosAbs;
+}
+
+function exportarJSON(){
+  const payload = { version: "1.0", generated_at: new Date().toISOString() };
+  for(let i=1;i<=5;i++){
+    try{ payload['block'+i] = JSON.parse(localStorage.getItem('epoc_block'+i)||'null'); }catch(e){ payload['block'+i]=null; }
+  }
+  // Añadir claves auxiliares
+  const keys = ['epoc_age','epoc_sexo','epoc_sat','epoc_bmi','epoc_packyears','epoc_mmrc','epoc_cat','epoc_exac_mod','epoc_exac_hosp','epoc_gold_group','epoc_fev1pct','epoc_6mwd','epoc_eos_abs','epoc_eos_pct'];
+  payload['aux'] = {};
+  keys.forEach(k=> payload['aux'][k] = localStorage.getItem(k)||null);
+
+  const blob = new Blob([JSON.stringify(payload,null,2)], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const ts = new Date().toISOString().slice(0,19).replace(/[:T]/g,'-');
+  a.href = url; a.download = 'EPOC_datos_'+ts+'.json'; a.click();
+  URL.revokeObjectURL(url);
+}
+
+function limpiar(){
+  if(!confirm('Esto borrará todos los datos EPOC guardados en este navegador. ¿Continuar?')) return;
+  Object.keys(localStorage).filter(k=>k.startsWith('epoc_')).forEach(k=>localStorage.removeItem(k));
+  for(let i=1;i<=5;i++) localStorage.removeItem('epoc_block'+i);
+  cargar();
+}
+</script>
+</body>
+</html>
