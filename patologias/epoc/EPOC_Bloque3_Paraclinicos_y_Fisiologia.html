@@ -1,0 +1,405 @@
+
+    <!doctype html>
+    <html lang="es-CO">
+    <head>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+      <title>Bloque 3 · Paraclínicos y fisiología</title>
+
+<style>
+  :root{
+    --bg:#f7f8fa;
+    --card:#ffffff;
+    --text:#0f172a;
+    --muted:#6b7280;
+    --primary:#0a84ff;
+    --border:#e5e7eb;
+    --shadow:0 10px 24px rgba(0,0,0,.08);
+    --radius:16px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;padding:32px;
+    background:var(--bg); color:var(--text);
+    font-family:"Gadugi","Segoe UI",system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+  }
+  .container{max-width:1080px;margin:0 auto}
+  .card{
+    background:var(--card); border:1px solid var(--border);
+    border-radius:var(--radius); box-shadow:var(--shadow);
+    padding:24px; margin:18px 0;
+  }
+  h1{font-size:28px;letter-spacing:-.02em;margin:0 0 8px}
+  h2{font-size:20px;letter-spacing:-.01em;margin:0 0 10px}
+  p.lead{color:var(--muted);margin:0 0 16px}
+  .grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+  label{font-size:12px;color:var(--muted);font-weight:600;display:block;margin:6px 0}
+  input[type="text"],input[type="date"],input[type="time"],
+  input[type="number"],select,textarea{
+    width:100%;padding:12px 14px;border:1px solid var(--border);
+    border-radius:12px;background:#fff;font-size:14px;outline:none;
+    transition:border .2s,box-shadow .2s;
+  }
+  input:focus,select:focus,textarea:focus{
+    border-color:var(--primary); box-shadow:0 0 0 3px rgba(10,132,255,.15);
+  }
+  textarea{min-height:120px;resize:vertical}
+  .hint{font-size:11px;color:var(--muted)}
+  .row{display:flex;gap:12px;flex-wrap:wrap}
+  .pill{padding:6px 10px;border-radius:999px;border:1px solid var(--border);background:#fff}
+  .section{margin-top:8px}
+  .kpi{display:flex;align-items:center;gap:8px;margin:6px 0}
+  .switch{
+    position:relative;display:inline-block;width:44px;height:26px;vertical-align:middle
+  }
+  .switch input{display:none}
+  .slider{
+    position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#d1d5db;transition:.2s;border-radius:999px;
+  }
+  .slider:before{
+    position:absolute;content:"";height:20px;width:20px;left:3px;top:3px;background:white;transition:.2s;border-radius:50%;
+    box-shadow:0 1px 2px rgba(0,0,0,.25);
+  }
+  .switch input:checked + .slider{background:var(--primary)}
+  .switch input:checked + .slider:before{transform:translateX(18px)}
+  .btn{
+    border:none;border-radius:12px;padding:12px 16px;font-weight:700;cursor:pointer;
+    box-shadow:0 10px 18px rgba(10,132,255,.2);transition:transform .05s ease;
+  }
+  .btn:active{transform:translateY(1px)}
+  .btn-primary{background:var(--primary);color:#fff}
+  .btn-ghost{background:#fff;border:1px solid var(--border);color:var(--text)}
+  .footer{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;margin-top:12px}
+  .badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:#eef2ff;color:#3730a3;font-size:12px;font-weight:700}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
+  .small{font-size:12px;color:var(--muted)}
+  .tight{line-height:1.2}
+  .cta{display:flex;justify-content:flex-end;margin-top:16px}
+  .summary{background:#0f172a;color:#e5e7eb;border-radius:12px;padding:12px 12px 6px}
+  .summary h3{margin:0 0 8px;font-size:14px;color:#93c5fd}
+  .summary textarea{background:transparent;color:#e5e7eb;border-color:#334155}
+  .chip-group{display:flex;gap:8px;flex-wrap:wrap}
+  .chip{border:1px solid var(--border);border-radius:999px;padding:8px 12px;background:#fff;display:flex;gap:8px;align-items:center}
+  .chip input{margin:0}
+  .sp{height:6px}
+  .divider{height:1px;background:var(--border);margin:8px 0 12px}
+</style>
+
+    </head>
+    <body>
+      <div class="container">
+        <div class="card">
+          <h1>Bloque 3 · Paraclínicos y fisiología</h1>
+          <p class="lead">Espirometría, 6MWT y escalas pronósticas, gasometría, laboratorio e imagen. Cálculos de BODE/BODEx, grado GOLD e indicación de ICS/O₂/NIV.</p>
+          <div class="badge">Centro de Experiencia EPOC • Estándar GOLD 2025 + GesEPOC</div>
+        </div>
+
+<div class="card">
+  <h2>Espirometría (preferir posbroncodilatador)</h2>
+  <div class="grid">
+    <div>
+      <label for="fechaEsp">Fecha</label>
+      <input id="fechaEsp" type="date">
+    </div>
+    <div>
+      <label for="fev1">FEV₁ (L)</label>
+      <input id="fev1" type="number" min="0" max="8" step="0.01">
+    </div>
+    <div>
+      <label for="fvc">FVC (L)</label>
+      <input id="fvc" type="number" min="0" max="10" step="0.01">
+    </div>
+    <div>
+      <label for="ratio">FEV₁/FVC (posBD)</label>
+      <input id="ratio" type="number" min="0" max="1" step="0.01">
+    </div>
+    <div>
+      <label for="fev1pct">FEV₁ % del predicho</label>
+      <input id="fev1pct" type="number" min="5" max="150" step="1">
+    </div>
+    <div>
+      <label for="goldGrado">Grado GOLD (auto)</label>
+      <input id="goldGrado" type="text" readonly>
+    </div>
+  </div>
+  <div class="hint">Grados por FEV₁%: 1 ≥80, 2 50–79, 3 30–49, 4 &lt;30.</div>
+</div>
+
+<div class="card">
+  <h2>Ejercicio y pronóstico</h2>
+  <div class="grid">
+    <div>
+      <label for="dist6m">6MWD (m)</label>
+      <input id="dist6m" type="number" min="0" max="800" step="1">
+    </div>
+    <div>
+      <label for="sato2Nadir">SatO₂ nadir (%)</label>
+      <input id="sato2Nadir" type="number" min="50" max="100" step="1">
+    </div>
+    <div>
+      <label for="bode">BODE (auto)</label>
+      <input id="bode" type="text" readonly>
+    </div>
+    <div>
+      <label for="bodex">BODEx (auto)</label>
+      <input id="bodex" type="text" readonly>
+    </div>
+  </div>
+  <div class="hint">BODE: IMC + FEV₁% + mMRC + 6MWD. BODEx sustituye 6MWD por exacerbaciones.</div>
+</div>
+
+<div class="card">
+  <h2>Gasometría arterial</h2>
+  <div class="grid">
+    <div>
+      <label for="ph">pH</label>
+      <input id="ph" type="number" min="6.8" max="7.8" step="0.001">
+    </div>
+    <div>
+      <label for="pao2">PaO₂ (mmHg)</label>
+      <input id="pao2" type="number" min="20" max="120" step="1">
+    </div>
+    <div>
+      <label for="paco2">PaCO₂ (mmHg)</label>
+      <input id="paco2" type="number" min="20" max="100" step="1">
+    </div>
+    <div>
+      <label for="hco3">HCO₃⁻ (mEq/L)</label>
+      <input id="hco3" type="number" min="5" max="45" step="0.1">
+    </div>
+    <div>
+      <label for="criterioO2">Criterios de O₂ (auto)</label>
+      <input id="criterioO2" type="text" readonly>
+    </div>
+    <div>
+      <label for="criterioNIV">Criterios de NIV (auto)</label>
+      <input id="criterioNIV" type="text" readonly>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Laboratorio y TAC</h2>
+  <div class="grid">
+    <div>
+      <label for="eosAbs">Eosinófilos (cél/µL)</label>
+      <input id="eosAbs" type="number" min="0" max="3000" step="1">
+    </div>
+    <div>
+      <label for="eosPct">Eosinófilos (%)</label>
+      <input id="eosPct" type="number" min="0" max="100" step="0.1">
+    </div>
+    <div>
+      <label for="icsGuia">Guía ICS (auto)</label>
+      <input id="icsGuia" type="text" readonly>
+    </div>
+    <div>
+      <label for="dlco">DLCO % pred</label>
+      <input id="dlco" type="number" min="10" max="150" step="1">
+    </div>
+    <div>
+      <label for="rvTlc">RV/TLC</label>
+      <input id="rvTlc" type="number" min="0.2" max="0.9" step="0.01">
+    </div>
+    <div>
+      <label for="tacEnf">TAC: enfisema</label>
+      <select id="tacEnf">
+        <option value="">Seleccione…</option>
+        <option>Ausente</option>
+        <option>Leve</option>
+        <option>Moderado</option>
+        <option>Severo</option>
+      </select>
+    </div>
+    <div>
+      <label for="tacBronq">TAC: bronquiectasias</label>
+      <select id="tacBronq">
+        <option value="">Seleccione…</option>
+        <option>No</option>
+        <option>Sí</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+        <div class="card summary">
+          <h3>Resumen narrativo del bloque (copiable)</h3>
+          <textarea id="resumen" placeholder="Aquí se generará el resumen narrativo con base en los campos diligenciados." readonly></textarea>
+          <div class="footer">
+            <button class="btn btn-primary" onclick="copiarResumen()">Copiar resumen</button>
+            <button class="btn btn-ghost" onclick="guardarDatos()">Guardar</button>
+            <button class="btn btn-ghost" onclick="limpiarDatos()">Limpiar</button>
+          </div>
+          <p class="small tight">Nota: los datos se guardan en este navegador mediante <span class="mono">localStorage</span>.</p>
+        </div>
+      </div>
+      <script>
+
+const $ = (id)=>document.getElementById(id);
+const saveKey='epoc_block3';
+
+function goldGradoFromFEV1(){
+  const p = parseFloat($('fev1pct').value||'NaN');
+  let g='—';
+  if(!isNaN(p)){
+    if(p>=80) g='1 (leve)';
+    else if(p>=50) g='2 (moderado)';
+    else if(p>=30) g='3 (severo)';
+    else g='4 (muy severo)';
+  }
+  $('goldGrado').value = g;
+}
+
+function bodeCalc(){
+  const bmi = parseFloat(localStorage.getItem('epoc_bmi')||'NaN');
+  const fev = parseFloat($('fev1pct').value||'NaN');
+  const mmrc = parseInt(localStorage.getItem('epoc_mmrc')||'-1');
+  const d6 = parseInt($('dist6m').value||'NaN');
+
+  let bmiScore = (!isNaN(bmi) && bmi<=21)?1:0;
+  let fevScore = 0;
+  if(!isNaN(fev)){
+    if(fev>=65) fevScore=0;
+    else if(fev>=50) fevScore=1;
+    else if(fev>=36) fevScore=2;
+    else fevScore=3;
+  } else fevScore = NaN;
+
+  let mmrcScore = (mmrc>=0)? (mmrc<=1?0:(mmrc==2?1:(mmrc==3?2:3))) : NaN;
+  let d6Score = (!isNaN(d6))? (d6>=350?0:(d6>=250?1:(d6>=150?2:3))) : NaN;
+
+  if([bmiScore,fevScore,mmrcScore,d6Score].some(v=>isNaN(v))){
+    $('bode').value='—';
+  }else{
+    $('bode').value= String(bmiScore+fevScore+mmrcScore+d6Score);
+  }
+}
+
+function bodexCalc(){
+  const bmi = parseFloat(localStorage.getItem('epoc_bmi')||'NaN');
+  const fev = parseFloat($('fev1pct').value||'NaN');
+  const mmrc = parseInt(localStorage.getItem('epoc_mmrc')||'-1');
+  const exacMod = parseInt(localStorage.getItem('epoc_exac_mod')||'0') || 0;
+  const exacHosp = parseInt(localStorage.getItem('epoc_exac_hosp')||'0') || 0;
+  const exacTot = exacMod + exacHosp;
+
+  let bmiScore = (!isNaN(bmi) && bmi<=21)?1:0;
+  let fevScore=0;
+  if(!isNaN(fev)){
+    if(fev>=65) fevScore=0; else if(fev>=50) fevScore=1; else if(fev>=36) fevScore=2; else fevScore=3;
+  } else fevScore=NaN;
+  let mmrcScore = (mmrc>=0)? (mmrc<=1?0:(mmrc==2?1:(mmrc==3?2:3))) : NaN;
+  let exacScore = (exacTot==0?0:(exacTot==1?1:2));
+
+  if([bmiScore,fevScore,mmrcScore,exacScore].some(v=>isNaN(v))){
+    $('bodex').value='—';
+  }else{
+    $('bodex').value= String(bmiScore+fevScore+mmrcScore+exacScore);
+  }
+}
+
+function criteriosOxigenoYNIV(){
+  const pao2 = parseFloat($('pao2').value||'NaN');
+  const paco2 = parseFloat($('paco2').value||'NaN');
+  // Para O2: PaO2 ≤55, o ≤60 con cor pulmonale/policitemia -> pediremos tick manual (simplificado)
+  let criterioO2 = '—';
+  if(!isNaN(pao2)){
+    if(pao2<=55) criterioO2='Cumple (PaO₂ ≤55)';
+    else if(pao2<=60) criterioO2='Considerar (PaO₂ 56–60; valorar cor pulmonale/policitemia)';
+    else criterioO2='No cumple';
+  }
+  $('criterioO2').value = criterioO2;
+
+  // NIV: hipercapnia persistente; usaremos umbral ≥52 mmHg como referencia clínica
+  let criterioNIV='—';
+  if(!isNaN(paco2)){
+    if(paco2>=52) criterioNIV='Candidato (PaCO₂ ≥52)';
+    else criterioNIV='No candidato';
+  }
+  $('criterioNIV').value = criterioNIV;
+}
+
+function guiaICS(){
+  const eos = parseFloat($('eosAbs').value||'NaN');
+  const pct = parseFloat($('eosPct').value||'NaN');
+  let g='—';
+  if(!isNaN(eos)){
+    if(eos>=300) g='Alta probabilidad de beneficio (≥300 cél/µL)';
+    else if(eos>=100) g='Beneficio probable (100–299 cél/µL)';
+    else g='Baja probabilidad (<100 cél/µL)';
+  }
+  if(!isNaN(pct) && pct<2) g += ' | Mayor riesgo de neumonía con ICS (<2%).';
+  $('icsGuia').value = g;
+  if(!isNaN(eos)) localStorage.setItem('epoc_eos_abs', String(eos));
+  if(!isNaN(pct)) localStorage.setItem('epoc_eos_pct', String(pct));
+}
+
+function updateResumen(){
+  goldGradoFromFEV1();
+  bodeCalc();
+  bodexCalc();
+  criteriosOxigenoYNIV();
+  guiaICS();
+
+  const fev1=$('fev1').value, fvc=$('fvc').value, ratio=$('ratio').value;
+  const fev1pct=$('fev1pct').value, grado=$('goldGrado').value;
+  const dist=$('dist6m').value, bode=$('bode').value, bodex=$('bodex').value;
+  const ph=$('ph').value, pao2=$('pao2').value, paco2=$('paco2').value, hco3=$('hco3').value;
+  const o2=$('criterioO2').value, niv=$('criterioNIV').value;
+  const eos=$('eosAbs').value, eosP=$('eosPct').value, ics=$('icsGuia').value;
+  const dlco=$('dlco').value, rvTlc=$('rvTlc').value, enf=$('tacEnf').value, bronq=$('tacBronq').value;
+
+  let s = `Espirometría posBD: FEV₁ ${fev1||'—'} L (${fev1pct||'—'}% pred), FVC ${fvc||'—'} L, FEV₁/FVC ${ratio||'—'}. `;
+  s += `Grado GOLD ${grado||'—'}. 6MWD ${dist||'—'} m; BODE ${bode||'—'}; BODEx ${bodex||'—'}. `;
+  s += `Gasometría: pH ${ph||'—'}, PaO₂ ${pao2||'—'} mmHg, PaCO₂ ${paco2||'—'} mmHg, HCO₃⁻ ${hco3||'—'} mEq/L. `;
+  s += `Oxígeno: ${o2||'—'}; NIV: ${niv||'—'}. `;
+  s += `Eosinófilos ${eos||'—'}/µL (${eosP||'—'}%). ICS: ${ics||'—'}. `;
+  if(dlco) s += `DLCO ${dlco}% pred. `;
+  if(rvTlc) s += `RV/TLC ${rvTlc}. `;
+  if(enf) s += `TAC: enfisema ${enf.toLowerCase()}. `;
+  if(bronq) s += `Bronquiectasias: ${bronq}.`;
+  $('resumen').value = s.trim();
+
+  // Persist cross-block
+  if(fev1pct) localStorage.setItem('epoc_fev1pct', fev1pct);
+  if(dist) localStorage.setItem('epoc_6mwd', dist);
+}
+
+function guardarDatos(){
+  const data = {
+    fechaEsp:$('fechaEsp').value, fev1:$('fev1').value, fvc:$('fvc').value, ratio:$('ratio').value, fev1pct:$('fev1pct').value, goldGrado:$('goldGrado').value,
+    dist6m:$('dist6m').value, sato2Nadir:$('sato2Nadir').value, bode:$('bode').value, bodex:$('bodex').value,
+    ph:$('ph').value, pao2:$('pao2').value, paco2:$('paco2').value, hco3:$('hco3').value, criterioO2:$('criterioO2').value, criterioNIV:$('criterioNIV').value,
+    eosAbs:$('eosAbs').value, eosPct:$('eosPct').value, icsGuia:$('icsGuia').value,
+    dlco:$('dlco').value, rvTlc:$('rvTlc').value, tacEnf:$('tacEnf').value, tacBronq:$('tacBronq').value,
+    resumen:$('resumen').value
+  };
+  localStorage.setItem(saveKey, JSON.stringify(data));
+  alert('Datos guardados.');
+}
+function limpiarDatos(){
+  localStorage.removeItem(saveKey);
+  ['epoc_fev1pct','epoc_6mwd','epoc_eos_abs','epoc_eos_pct'].forEach(k=>localStorage.removeItem(k));
+  location.reload();
+}
+function cargarDatos(){
+  const raw = localStorage.getItem(saveKey);
+  if(!raw) return;
+  try{
+    const d = JSON.parse(raw);
+    for(const k in d){ if($(k)) $(k).value = d[k]; }
+  }catch(e){console.warn(e);}
+}
+function copiarResumen(){ const ta=$('resumen'); ta.select(); ta.setSelectionRange(0,99999); document.execCommand('copy'); }
+
+['fev1pct','dist6m','fev1','fvc','ratio','ph','pao2','paco2','hco3','eosAbs','eosPct','dlco','rvTlc','tacEnf','tacBronq'].forEach(id=>$(id).addEventListener('input', updateResumen));
+cargarDatos();
+updateResumen();
+
+      </script>
+    </body>
+    </html>

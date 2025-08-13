@@ -1,0 +1,314 @@
+
+    <!doctype html>
+    <html lang="es-CO">
+    <head>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+      <title>Bloque 4 · Fenotipificación y tratamiento</title>
+
+<style>
+  :root{
+    --bg:#f7f8fa;
+    --card:#ffffff;
+    --text:#0f172a;
+    --muted:#6b7280;
+    --primary:#0a84ff;
+    --border:#e5e7eb;
+    --shadow:0 10px 24px rgba(0,0,0,.08);
+    --radius:16px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;padding:32px;
+    background:var(--bg); color:var(--text);
+    font-family:"Gadugi","Segoe UI",system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+  }
+  .container{max-width:1080px;margin:0 auto}
+  .card{
+    background:var(--card); border:1px solid var(--border);
+    border-radius:var(--radius); box-shadow:var(--shadow);
+    padding:24px; margin:18px 0;
+  }
+  h1{font-size:28px;letter-spacing:-.02em;margin:0 0 8px}
+  h2{font-size:20px;letter-spacing:-.01em;margin:0 0 10px}
+  p.lead{color:var(--muted);margin:0 0 16px}
+  .grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+  label{font-size:12px;color:var(--muted);font-weight:600;display:block;margin:6px 0}
+  input[type="text"],input[type="date"],input[type="time"],
+  input[type="number"],select,textarea{
+    width:100%;padding:12px 14px;border:1px solid var(--border);
+    border-radius:12px;background:#fff;font-size:14px;outline:none;
+    transition:border .2s,box-shadow .2s;
+  }
+  input:focus,select:focus,textarea:focus{
+    border-color:var(--primary); box-shadow:0 0 0 3px rgba(10,132,255,.15);
+  }
+  textarea{min-height:120px;resize:vertical}
+  .hint{font-size:11px;color:var(--muted)}
+  .row{display:flex;gap:12px;flex-wrap:wrap}
+  .pill{padding:6px 10px;border-radius:999px;border:1px solid var(--border);background:#fff}
+  .section{margin-top:8px}
+  .kpi{display:flex;align-items:center;gap:8px;margin:6px 0}
+  .switch{
+    position:relative;display:inline-block;width:44px;height:26px;vertical-align:middle
+  }
+  .switch input{display:none}
+  .slider{
+    position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#d1d5db;transition:.2s;border-radius:999px;
+  }
+  .slider:before{
+    position:absolute;content:"";height:20px;width:20px;left:3px;top:3px;background:white;transition:.2s;border-radius:50%;
+    box-shadow:0 1px 2px rgba(0,0,0,.25);
+  }
+  .switch input:checked + .slider{background:var(--primary)}
+  .switch input:checked + .slider:before{transform:translateX(18px)}
+  .btn{
+    border:none;border-radius:12px;padding:12px 16px;font-weight:700;cursor:pointer;
+    box-shadow:0 10px 18px rgba(10,132,255,.2);transition:transform .05s ease;
+  }
+  .btn:active{transform:translateY(1px)}
+  .btn-primary{background:var(--primary);color:#fff}
+  .btn-ghost{background:#fff;border:1px solid var(--border);color:var(--text)}
+  .footer{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;margin-top:12px}
+  .badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:#eef2ff;color:#3730a3;font-size:12px;font-weight:700}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
+  .small{font-size:12px;color:var(--muted)}
+  .tight{line-height:1.2}
+  .cta{display:flex;justify-content:flex-end;margin-top:16px}
+  .summary{background:#0f172a;color:#e5e7eb;border-radius:12px;padding:12px 12px 6px}
+  .summary h3{margin:0 0 8px;font-size:14px;color:#93c5fd}
+  .summary textarea{background:transparent;color:#e5e7eb;border-color:#334155}
+  .chip-group{display:flex;gap:8px;flex-wrap:wrap}
+  .chip{border:1px solid var(--border);border-radius:999px;padding:8px 12px;background:#fff;display:flex;gap:8px;align-items:center}
+  .chip input{margin:0}
+  .sp{height:6px}
+  .divider{height:1px;background:var(--border);margin:8px 0 12px}
+</style>
+
+    </head>
+    <body>
+      <div class="container">
+        <div class="card">
+          <h1>Bloque 4 · Fenotipificación y tratamiento</h1>
+          <p class="lead">Identificación de rasgos tratables, fenotipo GesEPOC y motor de recomendaciones automatizadas coherentes con GOLD 2025/GesEPOC.</p>
+          <div class="badge">Centro de Experiencia EPOC • Estándar GOLD 2025 + GesEPOC</div>
+        </div>
+
+<div class="card">
+  <h2>Rasgos tratables y fenotipo</h2>
+  <div class="chip-group">
+    <label class="chip"><input type="checkbox" class="rasgo" value="Exacerbador frecuente">Exacerbador frecuente</label>
+    <label class="chip"><input type="checkbox" class="rasgo" value="Eosinofílico (tipo 2)">Eosinofílico (tipo 2)</label>
+    <label class="chip"><input type="checkbox" class="rasgo" value="Bronquitis crónica">Bronquitis crónica</label>
+    <label class="chip"><input type="checkbox" class="rasgo" value="Enfisema predominante">Enfisema predominante</label>
+    <label class="chip"><input type="checkbox" class="rasgo" value="ACO/rasgos asmáticos">ACO/rasgos asmáticos</label>
+    <label class="chip"><input type="checkbox" class="rasgo" value="Bronquiectasias/colonización">Bronquiectasias/colonización</label>
+    <label class="chip"><input type="checkbox" class="rasgo" value="Hiperinsuflación">Hiperinsuflación</label>
+    <label class="chip"><input type="checkbox" class="rasgo" value="Déficit de AAT">Déficit de AAT</label>
+    <label class="chip"><input type="checkbox" class="rasgo" value="Overlap SAHOS">Overlap SAHOS</label>
+    <label class="chip"><input type="checkbox" class="rasgo" value="Fragilidad/sarcopenia">Fragilidad/sarcopenia</label>
+    <label class="chip"><input type="checkbox" class="rasgo" value="Ansiedad/depresión">Ansiedad/depresión</label>
+  </div>
+  <div class="grid">
+    <div>
+      <label for="fenoGese">Fenotipo GesEPOC (auto/ajustable)</label>
+      <select id="fenoGese">
+        <option>No agudizador</option>
+        <option>Agudizador eosinofílico</option>
+        <option>Agudizador no eosinofílico</option>
+      </select>
+      <div class="hint">Se autocompleta con exacerbaciones y eosinófilos; puede ajustarse clínicamente.</div>
+    </div>
+    <div>
+      <label for="grupoGOLD">Grupo GOLD A/B/E (de Bloque 2)</label>
+      <input id="grupoGOLD" type="text" readonly>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Tratamiento actual</h2>
+  <div class="chip-group">
+    <label class="chip"><input type="checkbox" class="trat" value="LAMA">LAMA</label>
+    <label class="chip"><input type="checkbox" class="trat" value="LABA">LABA</label>
+    <label class="chip"><input type="checkbox" class="trat" value="LABA/LAMA">LABA/LAMA</label>
+    <label class="chip"><input type="checkbox" class="trat" value="ICS">ICS</label>
+    <label class="chip"><input type="checkbox" class="trat" value="Triple">Triple</label>
+    <label class="chip"><input type="checkbox" class="trat" value="Roflumilast">Roflumilast</label>
+    <label class="chip"><input type="checkbox" class="trat" value="Macrólido">Macrólido</label>
+    <label class="chip"><input type="checkbox" class="trat" value="Mucolítico">Mucolítico</label>
+    <label class="chip"><input type="checkbox" class="trat" value="Oxígeno">Oxígeno</label>
+    <label class="chip"><input type="checkbox" class="trat" value="NIV">NIV</label>
+    <label class="chip"><input type="checkbox" class="trat" value="Rehabilitación">Rehabilitación</label>
+    <label class="chip"><input type="checkbox" class="trat" value="Dupilumab">Dupilumab</label>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Recomendaciones automatizadas</h2>
+  <div class="grid">
+    <div>
+      <label for="recsAuto">Sugerencias (auto)</label>
+      <textarea id="recsAuto" readonly></textarea>
+    </div>
+  </div>
+  <div class="hint">Las recomendaciones usan eosinófilos, exacerbaciones, FEV₁%, fenotipo y GOLD A/B/E.</div>
+</div>
+
+        <div class="card summary">
+          <h3>Resumen narrativo del bloque (copiable)</h3>
+          <textarea id="resumen" placeholder="Aquí se generará el resumen narrativo con base en los campos diligenciados." readonly></textarea>
+          <div class="footer">
+            <button class="btn btn-primary" onclick="copiarResumen()">Copiar resumen</button>
+            <button class="btn btn-ghost" onclick="guardarDatos()">Guardar</button>
+            <button class="btn btn-ghost" onclick="limpiarDatos()">Limpiar</button>
+          </div>
+          <p class="small tight">Nota: los datos se guardan en este navegador mediante <span class="mono">localStorage</span>.</p>
+        </div>
+      </div>
+      <script>
+
+const $ = (id)=>document.getElementById(id);
+const saveKey='epoc_block4';
+const getChecks = (cls)=>[...document.querySelectorAll('.'+cls+':checked')].map(c=>c.value);
+
+function autollenado(){
+  const exMod = parseInt(localStorage.getItem('epoc_exac_mod')||'0');
+  const exHosp = parseInt(localStorage.getItem('epoc_exac_hosp')||'0');
+  const eos = parseFloat(localStorage.getItem('epoc_eos_abs')||'NaN');
+  const grupo = localStorage.getItem('epoc_gold_group')||'';
+  $('grupoGOLD').value = grupo||'—';
+
+  // Fenotipo GesEPOC
+  let feno = 'No agudizador';
+  if((exMod+exHosp)>=2 || exHosp>=1){
+    if(!isNaN(eos) && eos>=300) feno='Agudizador eosinofílico';
+    else feno='Agudizador no eosinofílico';
+  }
+  $('fenoGese').value = feno;
+}
+
+function recomendaciones(){
+  const grupo = $('grupoGOLD').value.trim();
+  const eos = parseFloat(localStorage.getItem('epoc_eos_abs')||'NaN');
+  const eosPct = parseFloat(localStorage.getItem('epoc_eos_pct')||'NaN');
+  const fev = parseFloat(localStorage.getItem('epoc_fev1pct')||'NaN');
+  const exMod = parseInt(localStorage.getItem('epoc_exac_mod')||'0');
+  const exHosp = parseInt(localStorage.getItem('epoc_exac_hosp')||'0');
+  const rasgos = getChecks('rasgo');
+  const tActual = getChecks('trat');
+
+  const recomendaciones = [];
+
+  // Base GOLD
+  if(grupo==='A') recomendaciones.push('Mantener broncodilatador; educación y técnica inhalatoria.');
+  if(grupo==='B') recomendaciones.push('Escalar/optimizar a LABA/LAMA si persiste disnea.');
+  if(grupo==='E'){
+    if(!isNaN(eos) && eos>=300) recomendaciones.push('Iniciar/continuar TRIPLE (LABA/LAMA/ICS); beneficio alto con eosinófilos ≥300.');
+    else recomendaciones.push('LABA/LAMA; considerar TRIPLE si eos ≥100 y exacerbaciones.');
+  }
+
+  // ICS según eos
+  if(!isNaN(eos)){
+    if(eos<100) recomendaciones.push('Evitar iniciar ICS por baja probabilidad de beneficio (<100 cél/µL).');
+    if(eos>=100 && eos<300) recomendaciones.push('ICS con beneficio probable (100–299 cél/µL) si exacerbaciones.');
+    if(eos>=300) recomendaciones.push('Fuerte indicación de ICS/triple (≥300 cél/µL).');
+  }
+  if(!isNaN(eosPct) && eosPct<2) recomendaciones.push('Vigilar riesgo de neumonía con ICS (eosinófilos <2%).');
+
+  // Roflumilast
+  if(rasgos.includes('Bronquitis crónica') && !isNaN(fev) && fev<50 && (exMod+exHosp)>=1){
+    recomendaciones.push('Añadir Roflumilast (bronquitis crónica + FEV₁<50% + exacerbaciones).');
+  }
+  // Macrólido
+  if(rasgos.includes('Bronquiectasias/colonización') || (exMod+exHosp)>=2){
+    recomendaciones.push('Valorar macrólido a 6–12 meses (exacerbador seleccionado; revisar QT y resistencias).');
+  }
+  // Dupilumab (biológico)
+  if((exMod+exHosp)>=2 && !isNaN(eos) && eos>=300 && tActual.includes('Triple')){
+    recomendaciones.push('Candidato a Dupilumab (EPOC eosinofílica no controlada pese a triple).');
+  }
+  // Oxígeno/NIV
+  const pao2 = localStorage.getItem('epoc_pao2');
+  const paco2 = localStorage.getItem('epoc_paco2');
+  if(pao2 && parseFloat(pao2)<=60) recomendaciones.push('Confirmar elegibilidad para O₂ domiciliario con GSA estable.');
+  if(paco2 && parseFloat(paco2)>=52) recomendaciones.push('Candidato a NIV domiciliaria (hipercapnia persistente).');
+
+  // Rehab y reducción de volumen
+  if(grupo==='B' || grupo==='E' || rasgos.includes('Hiperinsuflación')) recomendaciones.push('Rehabilitación pulmonar estructurada.');
+  if(rasgos.includes('Enfisema predominante') && rasgos.includes('Hiperinsuflación')) recomendaciones.push('Valorar reducción de volumen endoscópica/quirúrgica (centros expertos).');
+
+  // AAT
+  if(rasgos.includes('Déficit de AAT')) recomendaciones.push('Ruta de manejo específico para déficit de AAT y consejería familiar.');
+
+  $('recsAuto').value = '• ' + recomendaciones.join('\n• ');
+}
+
+function updateResumen(){
+  recomendaciones();
+  const rasgos = getChecks('rasgo').join(', ') || '—';
+  const feno = $('fenoGese').value;
+  const grupo = $('grupoGOLD').value||'—';
+  const trat = getChecks('trat').join(', ') || '—';
+  const recs = $('recsAuto').value||'—';
+
+  const s = `Rasgos tratables: ${rasgos}. Fenotipo GesEPOC: ${feno}. Grupo GOLD: ${grupo}. ` +
+            `Tratamiento actual: ${trat}. Recomendaciones: ${recs.replaceAll('\n',' ')}.`;
+  $('resumen').value = s.trim();
+}
+
+function guardarDatos(){
+  const data = {
+    rasgos:getChecks('rasgo'),
+    fenoGese:$('fenoGese').value, grupoGOLD:$('grupoGOLD').value,
+    trat:getChecks('trat'),
+    recsAuto:$('recsAuto').value, resumen:$('resumen').value
+  };
+  localStorage.setItem(saveKey, JSON.stringify(data));
+  alert('Datos guardados.');
+}
+function limpiarDatos(){
+  localStorage.removeItem(saveKey);
+  location.reload();
+}
+function cargarDatos(){
+  autollenado();
+  const raw = localStorage.getItem(saveKey);
+  if(!raw) return;
+  try{
+    const d = JSON.parse(raw);
+    (d.rasgos||[]).forEach(v=>{ const el=[...document.querySelectorAll('.rasgo')].find(c=>c.value===v); if(el) el.checked=true; });
+    $('fenoGese').value = d.fenoGese||$('fenoGese').value;
+    $('grupoGOLD').value = d.grupoGOLD||$('grupoGOLD').value;
+    (d.trat||[]).forEach(v=>{ const el=[...document.querySelectorAll('.trat')].find(c=>c.value===v); if(el) el.checked=true; });
+    $('recsAuto').value = d.recsAuto||'';
+  }catch(e){console.warn(e);}
+}
+function copiarResumen(){ const ta=$('resumen'); ta.select(); ta.setSelectionRange(0,99999); document.execCommand('copy'); }
+
+document.querySelectorAll('.rasgo,.trat').forEach(el=>el.addEventListener('change', updateResumen));
+$('fenoGese').addEventListener('change', updateResumen);
+
+// add GSA cross-block for recs
+(function(){
+  const raw = localStorage.getItem('epoc_block3');
+  if(raw){
+    try{
+      const d = JSON.parse(raw);
+      if(d.pao2) localStorage.setItem('epoc_pao2', d.pao2);
+      if(d.paco2) localStorage.setItem('epoc_paco2', d.paco2);
+    }catch(e){}
+  }
+})();
+
+cargarDatos();
+recomendaciones();
+updateResumen();
+
+      </script>
+    </body>
+    </html>

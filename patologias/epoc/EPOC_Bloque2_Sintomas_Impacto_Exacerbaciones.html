@@ -1,0 +1,308 @@
+
+    <!doctype html>
+    <html lang="es-CO">
+    <head>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+      <title>Bloque 2 · Síntomas, impacto y exacerbaciones</title>
+
+<style>
+  :root{
+    --bg:#f7f8fa;
+    --card:#ffffff;
+    --text:#0f172a;
+    --muted:#6b7280;
+    --primary:#0a84ff;
+    --border:#e5e7eb;
+    --shadow:0 10px 24px rgba(0,0,0,.08);
+    --radius:16px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;padding:32px;
+    background:var(--bg); color:var(--text);
+    font-family:"Gadugi","Segoe UI",system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+  }
+  .container{max-width:1080px;margin:0 auto}
+  .card{
+    background:var(--card); border:1px solid var(--border);
+    border-radius:var(--radius); box-shadow:var(--shadow);
+    padding:24px; margin:18px 0;
+  }
+  h1{font-size:28px;letter-spacing:-.02em;margin:0 0 8px}
+  h2{font-size:20px;letter-spacing:-.01em;margin:0 0 10px}
+  p.lead{color:var(--muted);margin:0 0 16px}
+  .grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+  label{font-size:12px;color:var(--muted);font-weight:600;display:block;margin:6px 0}
+  input[type="text"],input[type="date"],input[type="time"],
+  input[type="number"],select,textarea{
+    width:100%;padding:12px 14px;border:1px solid var(--border);
+    border-radius:12px;background:#fff;font-size:14px;outline:none;
+    transition:border .2s,box-shadow .2s;
+  }
+  input:focus,select:focus,textarea:focus{
+    border-color:var(--primary); box-shadow:0 0 0 3px rgba(10,132,255,.15);
+  }
+  textarea{min-height:120px;resize:vertical}
+  .hint{font-size:11px;color:var(--muted)}
+  .row{display:flex;gap:12px;flex-wrap:wrap}
+  .pill{padding:6px 10px;border-radius:999px;border:1px solid var(--border);background:#fff}
+  .section{margin-top:8px}
+  .kpi{display:flex;align-items:center;gap:8px;margin:6px 0}
+  .switch{
+    position:relative;display:inline-block;width:44px;height:26px;vertical-align:middle
+  }
+  .switch input{display:none}
+  .slider{
+    position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#d1d5db;transition:.2s;border-radius:999px;
+  }
+  .slider:before{
+    position:absolute;content:"";height:20px;width:20px;left:3px;top:3px;background:white;transition:.2s;border-radius:50%;
+    box-shadow:0 1px 2px rgba(0,0,0,.25);
+  }
+  .switch input:checked + .slider{background:var(--primary)}
+  .switch input:checked + .slider:before{transform:translateX(18px)}
+  .btn{
+    border:none;border-radius:12px;padding:12px 16px;font-weight:700;cursor:pointer;
+    box-shadow:0 10px 18px rgba(10,132,255,.2);transition:transform .05s ease;
+  }
+  .btn:active{transform:translateY(1px)}
+  .btn-primary{background:var(--primary);color:#fff}
+  .btn-ghost{background:#fff;border:1px solid var(--border);color:var(--text)}
+  .footer{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;margin-top:12px}
+  .badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:#eef2ff;color:#3730a3;font-size:12px;font-weight:700}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
+  .small{font-size:12px;color:var(--muted)}
+  .tight{line-height:1.2}
+  .cta{display:flex;justify-content:flex-end;margin-top:16px}
+  .summary{background:#0f172a;color:#e5e7eb;border-radius:12px;padding:12px 12px 6px}
+  .summary h3{margin:0 0 8px;font-size:14px;color:#93c5fd}
+  .summary textarea{background:transparent;color:#e5e7eb;border-color:#334155}
+  .chip-group{display:flex;gap:8px;flex-wrap:wrap}
+  .chip{border:1px solid var(--border);border-radius:999px;padding:8px 12px;background:#fff;display:flex;gap:8px;align-items:center}
+  .chip input{margin:0}
+  .sp{height:6px}
+  .divider{height:1px;background:var(--border);margin:8px 0 12px}
+</style>
+
+    </head>
+    <body>
+      <div class="container">
+        <div class="card">
+          <h1>Bloque 2 · Síntomas, impacto y exacerbaciones</h1>
+          <p class="lead">Escalas (mMRC, CAT), historia de exacerbaciones y determinación automática de A/B/E.</p>
+          <div class="badge">Centro de Experiencia EPOC • Estándar GOLD 2025 + GesEPOC</div>
+        </div>
+
+<div class="card">
+  <h2>Escalas de síntomas</h2>
+  <div class="grid">
+    <div>
+      <label for="mmrc">mMRC (0–4)</label>
+      <select id="mmrc">
+        <option value="">Seleccione…</option>
+        <option value="0">0: Disnea solo con ejercicio intenso</option>
+        <option value="1">1: Disnea al subir una cuesta o apuro</option>
+        <option value="2">2: Más lento que pares; paro tras 15 min</option>
+        <option value="3">3: Se detiene después de 100 m o pocos minutos</option>
+        <option value="4">4: Disnea al vestirse o en reposo</option>
+      </select>
+    </div>
+    <div>
+      <label for="cat">CAT total (0–40)</label>
+      <input id="cat" type="number" min="0" max="40" step="1" placeholder="suma de 8 ítems">
+      <div class="hint">≥10 sugiere alto impacto de síntomas.</div>
+    </div>
+    <div>
+      <label for="disneaReposo">Disnea actual</label>
+      <select id="disneaReposo">
+        <option value="">Seleccione…</option>
+        <option>Leve</option>
+        <option>Moderada</option>
+        <option>Severa</option>
+      </select>
+    </div>
+    <div>
+      <label for="tosEsputo">Tos/Esputo</label>
+      <select id="tosEsputo">
+        <option value="">Seleccione…</option>
+        <option>Ausente</option>
+        <option>Ocasional</option>
+        <option>Crónica</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Exacerbaciones en los últimos 12 meses</h2>
+  <div class="grid">
+    <div>
+      <label for="exacMod">Moderadas (requieren ATB/esteroide)</label>
+      <input id="exacMod" type="number" min="0" max="20" step="1">
+    </div>
+    <div>
+      <label for="exacHosp">Graves (hospitalizaciones)</label>
+      <input id="exacHosp" type="number" min="0" max="20" step="1">
+    </div>
+    <div>
+      <label for="exacUCI">UCI (si aplica)</label>
+      <input id="exacUCI" type="number" min="0" max="20" step="1">
+    </div>
+    <div>
+      <label for="fumadorActual">Fumador activo</label>
+      <label class="switch"><input id="fumadorActual" type="checkbox"><span class="slider"></span></label>
+    </div>
+  </div>
+  <div class="section">
+    <div class="kpi"><span class="pill">Síntomas</span> <strong id="kSintomas">—</strong></div>
+    <div class="kpi"><span class="pill">Riesgo de exacerbación</span> <strong id="kRiesgo">—</strong></div>
+    <div class="kpi"><span class="pill">Clasificación GOLD (A/B/E)</span> <strong id="kGOLD">—</strong></div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Soporte y programas</h2>
+  <div class="grid">
+    <div>
+      <label for="oxigeno">Oxigenoterapia domiciliaria</label>
+      <label class="switch"><input id="oxigeno" type="checkbox"><span class="slider"></span></label>
+    </div>
+    <div>
+      <label for="horasOx">Horas/día de O₂ (si aplica)</label>
+      <input id="horasOx" type="number" min="0" max="24" step="1">
+    </div>
+    <div>
+      <label for="rehab">Rehabilitación pulmonar</label>
+      <select id="rehab">
+        <option value="">Seleccione…</option>
+        <option>Derivado</option>
+        <option>En curso</option>
+        <option>Completado</option>
+        <option>No aplica</option>
+      </select>
+    </div>
+    <div>
+      <label for="planAccion">Plan de acción escrito</label>
+      <label class="switch"><input id="planAccion" type="checkbox"><span class="slider"></span></label>
+    </div>
+  </div>
+</div>
+
+        <div class="card summary">
+          <h3>Resumen narrativo del bloque (copiable)</h3>
+          <textarea id="resumen" placeholder="Aquí se generará el resumen narrativo con base en los campos diligenciados." readonly></textarea>
+          <div class="footer">
+            <button class="btn btn-primary" onclick="copiarResumen()">Copiar resumen</button>
+            <button class="btn btn-ghost" onclick="guardarDatos()">Guardar</button>
+            <button class="btn btn-ghost" onclick="limpiarDatos()">Limpiar</button>
+          </div>
+          <p class="small tight">Nota: los datos se guardan en este navegador mediante <span class="mono">localStorage</span>.</p>
+        </div>
+      </div>
+      <script>
+
+const $ = (id)=>document.getElementById(id);
+const saveKey = 'epoc_block2';
+
+function sintomasAltos(){
+  const m = parseInt($('mmrc').value||'-1');
+  const cat = parseInt($('cat').value||'-1');
+  return (m>=2) || (cat>=10);
+}
+function riesgoAlto(){
+  const m = parseInt($('exacMod').value||'0');
+  const h = parseInt($('exacHosp').value||'0');
+  return (m>=2) || (h>=1);
+}
+function goldGrupo(){
+  const s = sintomasAltos();
+  const r = riesgoAlto();
+  if(r) return 'E';
+  return s ? 'B' : 'A';
+}
+
+function updateKPI(){
+  $('kSintomas').textContent = sintomasAltos() ? 'Altos (mMRC ≥2 o CAT ≥10)' : 'Bajos';
+  $('kRiesgo').textContent = riesgoAlto() ? 'Alto (≥2 moderadas o ≥1 grave)' : 'Bajo';
+  const g = goldGrupo();
+  $('kGOLD').textContent = g;
+  localStorage.setItem('epoc_gold_group', g);
+}
+
+function updateResumen(){
+  updateKPI();
+  const m = $('mmrc').value;
+  const cat = $('cat').value;
+  const em = $('exacMod').value||'0';
+  const eh = $('exacHosp').value||'0';
+  const uci = $('exacUCI').value||'0';
+  const fum = $('fumadorActual').checked ? 'fumador activo' : 'no fumador activo';
+  const ox = $('oxigeno').checked ? `Oxígeno domiciliario ${$('horasOx').value||'?'} h/día` : 'Sin oxígeno domiciliario';
+  const reh = $('rehab').value||'no registra';
+  const plan = $('planAccion').checked ? 'con plan de acción escrito' : 'sin plan de acción';
+
+  let s = `Impacto sintomático: mMRC ${m||'—'}, CAT ${cat||'—'}. `;
+  s += `Exacerbaciones 12 meses: ${em} moderadas, ${eh} graves`; if(uci!=='0') s += ` (UCI ${uci})`; s += '. ';
+  s += `Clasificación GOLD: ${goldGrupo()}. Riesgo de exacerbación: ${riesgoAlto()?'alto':'bajo'}. ${fum}. `;
+  s += `${ox}. Rehabilitación ${reh}, ${plan}.`;
+  $('resumen').value = s.trim();
+
+  // Persist values for later blocks
+  localStorage.setItem('epoc_mmrc', $('mmrc').value||'');
+  localStorage.setItem('epoc_cat', $('cat').value||'');
+  localStorage.setItem('epoc_exac_mod', em);
+  localStorage.setItem('epoc_exac_hosp', eh);
+}
+
+function guardarDatos(){
+  const data = {
+    mmrc:$('mmrc').value, cat:$('cat').value,
+    exacMod:$('exacMod').value, exacHosp:$('exacHosp').value, exacUCI:$('exacUCI').value,
+    fumadorActual:$('fumadorActual').checked,
+    oxigeno:$('oxigeno').checked, horasOx:$('horasOx').value, rehab:$('rehab').value, planAccion:$('planAccion').checked,
+    resumen:$('resumen').value
+  };
+  localStorage.setItem(saveKey, JSON.stringify(data));
+  alert('Datos guardados.');
+}
+function limpiarDatos(){
+  localStorage.removeItem(saveKey);
+  ['epoc_gold_group','epoc_mmrc','epoc_cat','epoc_exac_mod','epoc_exac_hosp'].forEach(k=>localStorage.removeItem(k));
+  location.reload();
+}
+function cargarDatos(){
+  const raw = localStorage.getItem(saveKey);
+  if(!raw) return;
+  try{
+    const d = JSON.parse(raw);
+    $('mmrc').value = d.mmrc||'';
+    $('cat').value = d.cat||'';
+    $('exacMod').value = d.exacMod||'';
+    $('exacHosp').value = d.exacHosp||'';
+    $('exacUCI').value = d.exacUCI||'';
+    $('fumadorActual').checked = !!d.fumadorActual;
+    $('oxigeno').checked = !!d.oxigeno;
+    $('horasOx').value = d.horasOx||'';
+    $('rehab').value = d.rehab||'';
+    $('planAccion').checked = !!d.planAccion;
+  }catch(e){console.warn(e);}
+}
+
+function copiarResumen(){
+  const ta = $('resumen'); ta.select(); ta.setSelectionRange(0,99999); document.execCommand('copy');
+}
+
+['mmrc','cat','exacMod','exacHosp','exacUCI','horasOx','rehab'].forEach(id=>$(id).addEventListener('input', updateResumen));
+document.querySelectorAll('#fumadorActual,#oxigeno,#planAccion').forEach(el=>el.addEventListener('change', updateResumen));
+
+cargarDatos();
+updateResumen();
+
+      </script>
+    </body>
+    </html>

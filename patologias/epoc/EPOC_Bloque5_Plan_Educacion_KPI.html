@@ -1,0 +1,258 @@
+
+    <!doctype html>
+    <html lang="es-CO">
+    <head>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+      <title>Bloque 5 · Plan de manejo, educación y KPI</title>
+
+<style>
+  :root{
+    --bg:#f7f8fa;
+    --card:#ffffff;
+    --text:#0f172a;
+    --muted:#6b7280;
+    --primary:#0a84ff;
+    --border:#e5e7eb;
+    --shadow:0 10px 24px rgba(0,0,0,.08);
+    --radius:16px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;padding:32px;
+    background:var(--bg); color:var(--text);
+    font-family:"Gadugi","Segoe UI",system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+  }
+  .container{max-width:1080px;margin:0 auto}
+  .card{
+    background:var(--card); border:1px solid var(--border);
+    border-radius:var(--radius); box-shadow:var(--shadow);
+    padding:24px; margin:18px 0;
+  }
+  h1{font-size:28px;letter-spacing:-.02em;margin:0 0 8px}
+  h2{font-size:20px;letter-spacing:-.01em;margin:0 0 10px}
+  p.lead{color:var(--muted);margin:0 0 16px}
+  .grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+  label{font-size:12px;color:var(--muted);font-weight:600;display:block;margin:6px 0}
+  input[type="text"],input[type="date"],input[type="time"],
+  input[type="number"],select,textarea{
+    width:100%;padding:12px 14px;border:1px solid var(--border);
+    border-radius:12px;background:#fff;font-size:14px;outline:none;
+    transition:border .2s,box-shadow .2s;
+  }
+  input:focus,select:focus,textarea:focus{
+    border-color:var(--primary); box-shadow:0 0 0 3px rgba(10,132,255,.15);
+  }
+  textarea{min-height:120px;resize:vertical}
+  .hint{font-size:11px;color:var(--muted)}
+  .row{display:flex;gap:12px;flex-wrap:wrap}
+  .pill{padding:6px 10px;border-radius:999px;border:1px solid var(--border);background:#fff}
+  .section{margin-top:8px}
+  .kpi{display:flex;align-items:center;gap:8px;margin:6px 0}
+  .switch{
+    position:relative;display:inline-block;width:44px;height:26px;vertical-align:middle
+  }
+  .switch input{display:none}
+  .slider{
+    position:absolute;cursor:pointer;top:0;left:0;right:0;bottom:0;background:#d1d5db;transition:.2s;border-radius:999px;
+  }
+  .slider:before{
+    position:absolute;content:"";height:20px;width:20px;left:3px;top:3px;background:white;transition:.2s;border-radius:50%;
+    box-shadow:0 1px 2px rgba(0,0,0,.25);
+  }
+  .switch input:checked + .slider{background:var(--primary)}
+  .switch input:checked + .slider:before{transform:translateX(18px)}
+  .btn{
+    border:none;border-radius:12px;padding:12px 16px;font-weight:700;cursor:pointer;
+    box-shadow:0 10px 18px rgba(10,132,255,.2);transition:transform .05s ease;
+  }
+  .btn:active{transform:translateY(1px)}
+  .btn-primary{background:var(--primary);color:#fff}
+  .btn-ghost{background:#fff;border:1px solid var(--border);color:var(--text)}
+  .footer{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;margin-top:12px}
+  .badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:#eef2ff;color:#3730a3;font-size:12px;font-weight:700}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace}
+  .small{font-size:12px;color:var(--muted)}
+  .tight{line-height:1.2}
+  .cta{display:flex;justify-content:flex-end;margin-top:16px}
+  .summary{background:#0f172a;color:#e5e7eb;border-radius:12px;padding:12px 12px 6px}
+  .summary h3{margin:0 0 8px;font-size:14px;color:#93c5fd}
+  .summary textarea{background:transparent;color:#e5e7eb;border-color:#334155}
+  .chip-group{display:flex;gap:8px;flex-wrap:wrap}
+  .chip{border:1px solid var(--border);border-radius:999px;padding:8px 12px;background:#fff;display:flex;gap:8px;align-items:center}
+  .chip input{margin:0}
+  .sp{height:6px}
+  .divider{height:1px;background:var(--border);margin:8px 0 12px}
+</style>
+
+    </head>
+    <body>
+      <div class="container">
+        <div class="card">
+          <h1>Bloque 5 · Plan de manejo, educación y KPI</h1>
+          <p class="lead">Construcción del plan, auditoría de calidad y consentimientos. El resumen integra todo para cerrar el ciclo clínico.</p>
+          <div class="badge">Centro de Experiencia EPOC • Estándar GOLD 2025 + GesEPOC</div>
+        </div>
+
+<div class="card">
+  <h2>Plan de manejo</h2>
+  <div class="grid">
+    <div>
+      <label for="planFarmaco">Plan farmacológico</label>
+      <textarea id="planFarmaco" placeholder="Detalle de ajustes: moléculas, dispositivos, dosis…"></textarea>
+    </div>
+    <div>
+      <label for="planNoFarm">Plan no farmacológico</label>
+      <textarea id="planNoFarm" placeholder="Rehabilitación, ejercicio, nutrición, cesación tabaco, educación…"></textarea>
+    </div>
+    <div>
+      <label for="interconsultas">Interconsultas/derivaciones</label>
+      <textarea id="interconsultas" placeholder="Neumología intervencionista, cirugía torácica, rehabilitación, sueño, nutrición, psicología…"></textarea>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Seguimiento y tareas</h2>
+  <div class="grid">
+    <div>
+      <label for="proximoCtrl">Próximo control</label>
+      <input id="proximoCtrl" type="date">
+    </div>
+    <div>
+      <label for="tareas">Tareas/órdenes</label>
+      <textarea id="tareas" placeholder="Espirometría + DLCO; 6MWT; GSA; TAC; vacunas; laboratorio…"></textarea>
+    </div>
+    <div>
+      <label for="educacion">Educación brindada</label>
+      <select id="educacion" multiple size="6">
+        <option>Técnica de inhalación correcta</option>
+        <option>Plan de acción por exacerbación</option>
+        <option>Reconocimiento de signos de alarma</option>
+        <option>Adherencia y dispositivos</option>
+        <option>Vacunación</option>
+        <option>Ejercicio/rehabilitación</option>
+      </select>
+      <div class="hint">Ctrl/Cmd + clic para múltiples.</div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>KPI de calidad (auditoría)</h2>
+  <div class="grid">
+    <div class="kpi"><span class="pill">CAT + mMRC + eos documentados</span><label class="switch"><input id="kpi1" type="checkbox"><span class="slider"></span></label></div>
+    <div class="kpi"><span class="pill">Técnica de inhalación verificada</span><label class="switch"><input id="kpi2" type="checkbox"><span class="slider"></span></label></div>
+    <div class="kpi"><span class="pill">Plan de acción escrito</span><label class="switch"><input id="kpi3" type="checkbox"><span class="slider"></span></label></div>
+    <div class="kpi"><span class="pill">Derivación a rehabilitación (B/E)</span><label class="switch"><input id="kpi4" type="checkbox"><span class="slider"></span></label></div>
+    <div class="kpi"><span class="pill">Criterios de O₂ correctos</span><label class="switch"><input id="kpi5" type="checkbox"><span class="slider"></span></label></div>
+    <div class="kpi"><span class="pill">Cribado de AAT (una vez por vida)</span><label class="switch"><input id="kpi6" type="checkbox"><span class="slider"></span></label></div>
+  </div>
+  <div class="row">
+    <div style="flex:1">
+      <label for="kpiScore">Cumplimiento (auto)</label>
+      <input id="kpiScore" type="text" readonly>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Consentimientos</h2>
+  <div class="chip-group">
+    <label class="chip"><input type="checkbox" class="cons" value="Educación/uso de datos clínicos con fines asistenciales">Educación/uso de datos clínicos</label>
+    <label class="chip"><input type="checkbox" class="cons" value="Uso de datos con fines de investigación (anonimizados)">Investigación (anonim.)</label>
+    <label class="chip"><input type="checkbox" class="cons" value="Terapia inhalada y ajustes">Terapia inhalada</label>
+    <label class="chip"><input type="checkbox" class="cons" value="Roflumilast/macrólido (si indicado)">Roflumilast/macrólido</label>
+    <label class="chip"><input type="checkbox" class="cons" value="Oxígeno/NIV domiciliaria (si indicado)">Oxígeno/NIV</label>
+    <label class="chip"><input type="checkbox" class="cons" value="Biológico Dupilumab (si indicado)">Biológico</label>
+  </div>
+</div>
+
+        <div class="card summary">
+          <h3>Resumen narrativo del bloque (copiable)</h3>
+          <textarea id="resumen" placeholder="Aquí se generará el resumen narrativo con base en los campos diligenciados." readonly></textarea>
+          <div class="footer">
+            <button class="btn btn-primary" onclick="copiarResumen()">Copiar resumen</button>
+            <button class="btn btn-ghost" onclick="guardarDatos()">Guardar</button>
+            <button class="btn btn-ghost" onclick="limpiarDatos()">Limpiar</button>
+          </div>
+          <p class="small tight">Nota: los datos se guardan en este navegador mediante <span class="mono">localStorage</span>.</p>
+        </div>
+      </div>
+      <script>
+
+const $ = (id)=>document.getElementById(id);
+const saveKey='epoc_block5';
+
+function calcKPIScore(){
+  const ids=['kpi1','kpi2','kpi3','kpi4','kpi5','kpi6'];
+  const vals = ids.map(id=>$(id).checked?1:0);
+  const sum = vals.reduce((a,b)=>a+b,0);
+  const pct = Math.round((sum/ids.length)*100);
+  $('kpiScore').value = `${pct}% (${sum}/${ids.length})`;
+}
+
+function updateResumen(){
+  calcKPIScore();
+  const pf=$('planFarmaco').value||'—';
+  const pnf=$('planNoFarm').value||'—';
+  const inter=$('interconsultas').value||'—';
+  const ctrl=$('proximoCtrl').value||'—';
+  const tareas=$('tareas').value||'—';
+  const edu=[...$('educacion').selectedOptions].map(o=>o.value||o.text).join('; ')||'—';
+  const cons=[...document.querySelectorAll('.cons:checked')].map(c=>c.value).join('; ')||'—';
+  const kpi=$('kpiScore').value||'—';
+
+  let s = `Plan farmacológico: ${pf}. Plan no farmacológico: ${pnf}. Interconsultas: ${inter}. `;
+  s += `Próximo control: ${ctrl}. Tareas/órdenes: ${tareas}. Educación brindada: ${edu}. `;
+  s += `Consentimientos: ${cons}. KPI cumplidos: ${kpi}.`;
+  $('resumen').value = s.trim();
+}
+
+function guardarDatos(){
+  const data = {
+    planFarmaco:$('planFarmaco').value, planNoFarm:$('planNoFarm').value, interconsultas:$('interconsultas').value,
+    proximoCtrl:$('proximoCtrl').value, tareas:$('tareas').value, educacion:[...$('educacion').selectedOptions].map(o=>o.value||o.text),
+    kpi:[ 'kpi1','kpi2','kpi3','kpi4','kpi5','kpi6' ].map(id=>$(id).checked),
+    consentimientos:[...document.querySelectorAll('.cons:checked')].map(c=>c.value),
+    resumen:$('resumen').value
+  };
+  localStorage.setItem(saveKey, JSON.stringify(data));
+  alert('Datos guardados.');
+}
+function limpiarDatos(){
+  localStorage.removeItem(saveKey);
+  location.reload();
+}
+function cargarDatos(){
+  const raw = localStorage.getItem(saveKey);
+  if(!raw) return;
+  try{
+    const d=JSON.parse(raw);
+    $('planFarmaco').value=d.planFarmaco||'';
+    $('planNoFarm').value=d.planNoFarm||'';
+    $('interconsultas').value=d.interconsultas||'';
+    $('proximoCtrl').value=d.proximoCtrl||'';
+    $('tareas').value=d.tareas||'';
+    (d.educacion||[]).forEach(v=>{ const opt=[...$('educacion').options].find(o=>(o.value||o.text)===v); if(opt) opt.selected=true; });
+    (d.kpi||[]).forEach((v,i)=>{ const id='kpi'+(i+1); $(id).checked=!!v; });
+    (d.consentimientos||[]).forEach(v=>{ const el=[...document.querySelectorAll('.cons')].find(c=>c.value===v); if(el) el.checked=true; });
+  }catch(e){console.warn(e);}
+}
+function copiarResumen(){ const ta=$('resumen'); ta.select(); ta.setSelectionRange(0,99999); document.execCommand('copy'); }
+
+['planFarmaco','planNoFarm','interconsultas','proximoCtrl','tareas'].forEach(id=>$(id).addEventListener('input', updateResumen));
+$('educacion').addEventListener('change', updateResumen);
+document.querySelectorAll('.cons').forEach(el=>el.addEventListener('change', updateResumen));
+['kpi1','kpi2','kpi3','kpi4','kpi5','kpi6'].forEach(id=>$(id).addEventListener('change', updateResumen));
+
+cargarDatos();
+updateResumen();
+
+      </script>
+    </body>
+    </html>
